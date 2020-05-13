@@ -62,6 +62,10 @@
                                                         <td>Banco: {{ p.banco_boleto }}</td>
                                                         <td>Vencimento: {{ p.data_vencimento_boleto | moment("DD/MM/YYYY") }}</td>
                                                     </tr>
+                                                    <tr>
+                                                        <td colspan="3">Comissão vendedor: R$ {{ formatMoeda(p.comissao_vendedor) }}</td>
+            
+                                                    </tr>
                                                     <tr v-if="p.data_quitacao_boleto">
                                                         <td>Data de quitação: {{ p.data_quitacao_boleto | moment("DD/MM/YYYY") }}</td>
                                                         <td>Agência de quitação: {{ p.agencia_quitacao }}</td>
