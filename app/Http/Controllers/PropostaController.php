@@ -14,14 +14,6 @@ class PropostaController extends Controller
         return json_encode($propostas);
     }
     public function store(Request $request){
-
-        $saldo = Conta::find(1);
-        $valor_boleto = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('valor_boleto'))));
-        
-        if($saldo->saldo >= $valor_boleto){
-            
-            $saldo->saldo = $saldo->saldo - $valor_boleto;
-            $saldo->save();
             
             $numero = Proposta::count()+1;
 
@@ -41,20 +33,40 @@ class PropostaController extends Controller
             $proposta->save();
 
             return response(200);
-        }else{
-            return error();
-        }
         
         
     }
 
     public function update(Request $request, $id){
+        
         $proposta = Proposta::find($id);
-        $proposta->status = $request->input('status');
-        if($request->input('data_quitacao') ==! 0){
-            $proposta->data_quitacao_boleto = $request->input('data_quitacao');
+        $saldo = Conta::find(1);
+        
+        if($request->input('status') == 3){
+            if($saldo->saldo >= $proposta->valor_boleto){
+                $saldo->saldo = $saldo->saldo - $proposta->valor_boleto;
+                $saldo->save();
+
+                $proposta->status = $request->input('status');
+                $proposta->data_quitacao_boleto = $request->input('data_quitacao');
+                $proposta->save();
+                return response(200);
+            }else{
+                return error();
+            }
+        }elseif($request->input('status') == 4){
+            $saldo->saldo = $saldo->saldo + $proposta->valor_boleto + $proposta->rendimento;
+            $saldo->save();
+            $proposta->status = $request->input('status');
+            $proposta->save();
+            return response(200);
+        }else{
+            $proposta->status = $request->input('status');
+            $proposta->save();
+            return response(200);
         }
-        $proposta->save();
-        return json_encode($proposta);
+        
+        
+        
     }
 }

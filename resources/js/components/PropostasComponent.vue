@@ -280,7 +280,7 @@ const customStyles = {
                         currentObj.output = error;
                         Swal.fire({
                                     title: 'Ops!',
-                                    text: 'Não há saldo para cadastrar esta proposta.',
+                                    text: 'Erro ao cadastrar proposta.',
                                     icon: 'error',
                                     showCancelButton: false,
                                     showConfirmButton: false,
@@ -318,7 +318,7 @@ const customStyles = {
                         currentObj.output = error;
                         Swal.fire({
                                     title: 'Ops!',
-                                    text: 'Erro ao atualizar esta proposta.',
+                                    text: 'Não há saldo para atualizar esta proposta.',
                                     icon: 'error',
                                     showCancelButton: false,
                                     showConfirmButton: false,
