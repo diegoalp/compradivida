@@ -60,10 +60,12 @@
                                                         <td>Vencimento: {{ p.data_vencimento_boleto | moment("DD/MM/YYYY") }}</td>
                                                     </tr>
                                                     <tr v-if="p.data_quitacao_boleto">
-                                                        <td colspan="3">Data de quitação: {{ p.data_quitacao_boleto | moment("DD/MM/YYYY") }}</td>
+                                                        <td>Data de quitação: {{ p.data_quitacao_boleto | moment("DD/MM/YYYY") }}</td>
+                                                        <td>Agência de quitação: {{ p.agencia_quitacao }}</td>
+                                                        <td>Banco de quitação: {{ p.banco_quitacao }}</td>
                                                     </tr>   
-                                                    <tr>
-                                                        <td  colspan="3">   
+                                                    <tr v-if="p.status !== 4">
+                                                        <td colspan="3">   
                                                             <form @submit.prevent="formAttProposta(p.id)">
                                                                     <div class="row">
                                                                         <div class="form-group col-md-4">
@@ -132,9 +134,12 @@
                             <div class="col-12"><hr></div>
                             <div class="form-group col-md-4">
                                 <label for="banco_boleto">Banco do boleto</label>
-                                <select class="form-control" id="banco_boleto" name="banco_boleto" v-model="proposta.banco_boleto" required>
-                                    <option v-for="b in listabancos" v-bind:key="b.codigo" v-bind:value="b.codigo + ' - ' + b.nome">{{ b.codigo }} - {{ b.nome }} </option>
-                                </select>
+                                <vue-simple-suggest
+                                    v-model="proposta.banco_boleto"
+                                    :list="listabancos"
+                                    display-attribute="nome"
+                                    :filter-by-query="true">
+                                </vue-simple-suggest>
                             </div>
                             <div class="form-group col-md-4 col-sm-12">
                                     <label for="valor_boleto">Valor do boleto</label>
@@ -156,6 +161,19 @@
                                     <label for="comissao_escritorio">Comissão do escritório</label>
                                     <input class="form-control" type="text" v-money="moeda" name="comissao_escritorio" v-model="proposta.comissao_escritorio" required>
                             </div>
+                            <div class="form-group col-md-4">
+                                <label for="agencia">Agência</label>
+                                <input type="text" class="form-control text-uppercase" id="agencia" name="agencia" v-model="proposta.agencia_quitacao" required>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="banco_boleto">Banco de quitação</label>
+                                <vue-simple-suggest
+                                    v-model="proposta.banco_quitacao"
+                                    :list="listabancos"
+                                    display-attribute="nome"
+                                    :filter-by-query="true">
+                                </vue-simple-suggest>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -174,6 +192,8 @@
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import 'sweetalert2/src/sweetalert2.scss'
 import {VMoney} from 'v-money'
+import VueSimpleSuggest from 'vue-simple-suggest'
+import 'vue-simple-suggest/dist/styles.css'
 
 const customLabels = {
     first: '<< Primeira',
@@ -187,8 +207,18 @@ const customStyles = {
     },
 };
     export default {
+        components: {
+            VueSimpleSuggest
+        },
         data() {
             return {
+                autoCompleteStyle : {
+                    vueSimpleSuggest: "position-relative",
+                    inputWrapper: "",
+                    defaultInput : "form-control",
+                    suggestions: "position-absolute list-group z-1000",
+                    suggestItem: "list-group-item"
+                },
                 listabancos: [],
                 status: '',
                 saldo: '',
@@ -219,7 +249,9 @@ const customStyles = {
                     valor_boleto: '',
                     rendimento: '',
                     comissao_total: '',
-                    comissao_escritorio: ''
+                    comissao_escritorio: '',
+                    banco_quitacao: '',
+                    agencia_quitacao: ''
                 },
                 listaPropostas: [],
                 paginaDePropostas: [],
@@ -326,6 +358,7 @@ const customStyles = {
 
                     });
                     this.loadPropostas();
+                    this.loadSaldo();
             },
             loadSaldo() {
                 axios.get('/getsaldo')

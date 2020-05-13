@@ -28,6 +28,8 @@ class CreatePropostasTable extends Migration
             $table->float('comissao_total');
             $table->float('comissao_escritorio');
             $table->integer('status');
+            $table->string('agencia_quitacao');
+            $table->string('banco_quitacao');
             $table->softDeletes();
             $table->timestamps();
         });

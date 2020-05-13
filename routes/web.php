@@ -27,6 +27,3 @@ Route::get('/proposta/{id}','PropostaController@show');
 //Saldo
 Route::get('/getsaldo', 'ContaController@index');
 Route::post('/attsaldo/{id}', 'ContaController@update');
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');

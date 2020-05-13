@@ -21,11 +21,13 @@ class PropostaController extends Controller
             $proposta->protocolo = "CD-".str_pad($numero , 3 , '0' , STR_PAD_LEFT);
             $proposta->nome = mb_strtoupper($request->input('nome'));
             $proposta->nome_vendedor = mb_strtoupper($request->input('nome_vendedor'));
+            $proposta->agencia_quitacao = mb_strtoupper($request->input('agencia_quitacao'));
             $proposta->telefone = $request->input('telefone');
             $proposta->cpf = $request->input('cpf');
             $proposta->data_vencimento_boleto = $request->input('data_vencimento_boleto');
             $proposta->banco_boleto = $request->input('banco_boleto');
-            $proposta->valor_boleto = $valor_boleto;
+            $proposta->banco_quitacao = $request->input('banco_quitacao');
+            $proposta->valor_boleto = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('valor_boleto'))));
             $proposta->rendimento = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('rendimento'))));
             $proposta->comissao_total = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_total'))));
             $proposta->comissao_escritorio = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_escritorio'))));
