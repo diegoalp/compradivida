@@ -31,6 +31,7 @@ class PropostaController extends Controller
             $proposta->rendimento = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('rendimento'))));
             $proposta->comissao_total = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_total'))));
             $proposta->comissao_escritorio = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_escritorio'))));
+            $proposta->comissao_vendedor = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_vendedor'))));
             $proposta->status = 1;
             $proposta->save();
 
