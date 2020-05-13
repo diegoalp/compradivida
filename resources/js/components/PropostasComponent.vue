@@ -1,9 +1,12 @@
 <template>
     <div>
-        <div class="float-right" style="margin-bottom: 20px;">Saldo: 
+        <div class="float-left" style="margin-bottom: 20px;">Saldo: 
             <form @submit.prevent="attSaldo">
                 <input type="text" v-model="saldo"  v-money="moeda">
             </form>
+        </div>
+        <div class="float-right" style="width: 350px;">Buscar
+            <input type="search" name="table_search" class="form-control pull-right" v-model="buscar">
         </div>
         <table class="table table-striped">
             <tbody><tr>
@@ -99,7 +102,7 @@
                     
             </tbody>
         </table>
-        <jw-pagination v-bind:items="listaPropostas" @changePage="onChangePage" :labels="customLabels" :styles="customStyles"></jw-pagination>
+        <jw-pagination v-bind:items="lista" @changePage="onChangePage" :labels="customLabels" :styles="customStyles"></jw-pagination>
 
         <!-- Modal nova proposta -->
         <div class="modal fade" id="novaPropostaModal" tabindex="-1" role="dialog" aria-labelledby="novaPropostaModalLabel" aria-hidden="true">
@@ -138,6 +141,7 @@
                                     v-model="proposta.banco_boleto"
                                     :list="listabancos"
                                     display-attribute="nome"
+                                    :styles="autoCompleteStyle"
                                     :filter-by-query="true">
                                 </vue-simple-suggest>
                             </div>
@@ -155,11 +159,15 @@
                             </div>
                             <div class="form-group col-md-4 col-sm-12">
                                     <label for="comissao_total">Comissão total</label>
-                                    <input class="form-control" type="text" v-money="moeda" name="comissao_total" v-model="proposta.comissao_total" required>
+                                    <input class="form-control" type="text" v-money="moeda" name="comissao_total" @blur="valorComissao" v-model="proposta.comissao_total" required>
                             </div>
                             <div class="form-group col-md-4 col-sm-12">
                                     <label for="comissao_escritorio">Comissão do escritório</label>
-                                    <input class="form-control" type="text" v-money="moeda" name="comissao_escritorio" v-model="proposta.comissao_escritorio" required>
+                                    <input class="form-control" type="text" v-money="moeda_rendimento" name="comissao_escritorio" v-model="proposta.comissao_escritorio" disabled>
+                            </div>
+                            <div class="form-group col-md-4 col-sm-12">
+                                    <label for="comissao_vendedor">Comissão do vendedor</label>
+                                    <input class="form-control" type="text" v-money="moeda_rendimento" name="comissao_vendedor" v-model="proposta.comissao_vendedor" disabled>
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="agencia">Agência</label>
@@ -170,6 +178,7 @@
                                 <vue-simple-suggest
                                     v-model="proposta.banco_quitacao"
                                     :list="listabancos"
+                                    :styles="autoCompleteStyle"
                                     display-attribute="nome"
                                     :filter-by-query="true">
                                 </vue-simple-suggest>
@@ -216,13 +225,12 @@ const customStyles = {
                     vueSimpleSuggest: "position-relative",
                     inputWrapper: "",
                     defaultInput : "form-control",
-                    suggestions: "position-absolute list-group z-1000",
-                    suggestItem: "list-group-item"
                 },
                 listabancos: [],
                 status: '',
                 saldo: '',
                 data_quitacao: '',
+                buscar: '',
                 moeda: {
                     decimal: ',',
                     thousands: '.',
@@ -250,6 +258,7 @@ const customStyles = {
                     rendimento: '',
                     comissao_total: '',
                     comissao_escritorio: '',
+                    comissao_vendedor: '',
                     banco_quitacao: '',
                     agencia_quitacao: ''
                 },
@@ -288,6 +297,14 @@ const customStyles = {
                 var valor = valor.replace(",",".");
                 var valor = parseFloat(valor);
                 this.proposta.rendimento = (valor * 0.05).toFixed(4);
+            },
+            valorComissao(){
+                var comissao = this.proposta.comissao_total.replace(".","");
+                var comissao = comissao.replace("R$","");
+                var comissao = comissao.replace(",",".");
+                var comissao = parseFloat(comissao);
+                this.proposta.comissao_escritorio = (comissao * 0.65).toFixed(4);
+                this.proposta.comissao_vendedor = (comissao * 0.35).toFixed(4);
             },
             formProposta(e){
             e.preventDefault();
@@ -402,6 +419,32 @@ const customStyles = {
                     });
                     // this.loadPropostas();
             },
+        },
+        computed: {
+            lista:function(){
+                let ordem = "asc";
+                let ordemCol = "nome";
+                ordemCol = ordemCol.toLowerCase();
+                if(ordem == "asc"){
+                    this.listaPropostas.sort(function(a,b){
+                    if (a[ordemCol] > b[ordemCol]) {return 1;}
+                    if (a[ordemCol] < b[ordemCol]) {return -1;}
+                    return 0;
+                });
+                }else{
+                    this.listaPropostas.sort(function(a,b){
+                    if (a[ordemCol] < b[ordemCol]) {return 1;}
+                    if (a[ordemCol] > b[ordemCol]) {return -1;}
+                    return 0;
+                });
+                }
+
+                const search = this.buscar.toLowerCase().trim();
+
+                if (!search) return this.listaPropostas;
+
+                return this.listaPropostas.filter(p => p.nome.toLowerCase().indexOf(search) > -1);
+            }
         },
         mounted() {
             this.loadBancos();

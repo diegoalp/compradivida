@@ -1,3 +1,6 @@
 .bg-info{
     background: linear-gradient(-45deg, #66cdcc 0%, #336799 100%) !important;
 }
+li .suggest-item .hover:hover{
+    background-color: #ffffff !important;
+}

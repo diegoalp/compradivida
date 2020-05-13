@@ -2211,6 +2211,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2236,14 +2245,13 @@ var customStyles = {
       autoCompleteStyle: {
         vueSimpleSuggest: "position-relative",
         inputWrapper: "",
-        defaultInput: "form-control",
-        suggestions: "position-absolute list-group z-1000",
-        suggestItem: "list-group-item"
+        defaultInput: "form-control"
       },
       listabancos: [],
       status: '',
       saldo: '',
       data_quitacao: '',
+      buscar: '',
       moeda: {
         decimal: ',',
         thousands: '.',
@@ -2271,6 +2279,7 @@ var customStyles = {
         rendimento: '',
         comissao_total: '',
         comissao_escritorio: '',
+        comissao_vendedor: '',
         banco_quitacao: '',
         agencia_quitacao: ''
       },
@@ -2310,6 +2319,14 @@ var customStyles = {
       var valor = valor.replace(",", ".");
       var valor = parseFloat(valor);
       this.proposta.rendimento = (valor * 0.05).toFixed(4);
+    },
+    valorComissao: function valorComissao() {
+      var comissao = this.proposta.comissao_total.replace(".", "");
+      var comissao = comissao.replace("R$", "");
+      var comissao = comissao.replace(",", ".");
+      var comissao = parseFloat(comissao);
+      this.proposta.comissao_escritorio = (comissao * 0.65).toFixed(4);
+      this.proposta.comissao_vendedor = (comissao * 0.35).toFixed(4);
     },
     formProposta: function formProposta(e) {
       e.preventDefault();
@@ -2412,6 +2429,45 @@ var customStyles = {
           showConfirmButton: false
         });
       }); // this.loadPropostas();
+    }
+  },
+  computed: {
+    lista: function lista() {
+      var ordem = "asc";
+      var ordemCol = "nome";
+      ordemCol = ordemCol.toLowerCase();
+
+      if (ordem == "asc") {
+        this.listaPropostas.sort(function (a, b) {
+          if (a[ordemCol] > b[ordemCol]) {
+            return 1;
+          }
+
+          if (a[ordemCol] < b[ordemCol]) {
+            return -1;
+          }
+
+          return 0;
+        });
+      } else {
+        this.listaPropostas.sort(function (a, b) {
+          if (a[ordemCol] < b[ordemCol]) {
+            return 1;
+          }
+
+          if (a[ordemCol] > b[ordemCol]) {
+            return -1;
+          }
+
+          return 0;
+        });
+      }
+
+      var search = this.buscar.toLowerCase().trim();
+      if (!search) return this.listaPropostas;
+      return this.listaPropostas.filter(function (p) {
+        return p.nome.toLowerCase().indexOf(search) > -1;
+      });
     }
   },
   mounted: function mounted() {
@@ -45553,10 +45609,7 @@ var render = function() {
     [
       _c(
         "div",
-        {
-          staticClass: "float-right",
-          staticStyle: { "margin-bottom": "20px" }
-        },
+        { staticClass: "float-left", staticStyle: { "margin-bottom": "20px" } },
         [
           _vm._v("Saldo: \n        "),
           _c(
@@ -45598,6 +45651,35 @@ var render = function() {
               })
             ]
           )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "float-right", staticStyle: { width: "350px" } },
+        [
+          _vm._v("Buscar\n        "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.buscar,
+                expression: "buscar"
+              }
+            ],
+            staticClass: "form-control pull-right",
+            attrs: { type: "search", name: "table_search" },
+            domProps: { value: _vm.buscar },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.buscar = $event.target.value
+              }
+            }
+          })
         ]
       ),
       _vm._v(" "),
@@ -46044,7 +46126,7 @@ var render = function() {
       _vm._v(" "),
       _c("jw-pagination", {
         attrs: {
-          items: _vm.listaPropostas,
+          items: _vm.lista,
           labels: _vm.customLabels,
           styles: _vm.customStyles
         },
@@ -46254,6 +46336,7 @@ var render = function() {
                             attrs: {
                               list: _vm.listabancos,
                               "display-attribute": "nome",
+                              styles: _vm.autoCompleteStyle,
                               "filter-by-query": true
                             },
                             model: {
@@ -46437,6 +46520,7 @@ var render = function() {
                             },
                             domProps: { value: _vm.proposta.comissao_total },
                             on: {
+                              blur: _vm.valorComissao,
                               input: function($event) {
                                 if ($event.target.composing) {
                                   return
@@ -46467,8 +46551,8 @@ var render = function() {
                               {
                                 name: "money",
                                 rawName: "v-money",
-                                value: _vm.moeda,
-                                expression: "moeda"
+                                value: _vm.moeda_rendimento,
+                                expression: "moeda_rendimento"
                               },
                               {
                                 name: "model",
@@ -46481,7 +46565,7 @@ var render = function() {
                             attrs: {
                               type: "text",
                               name: "comissao_escritorio",
-                              required: ""
+                              disabled: ""
                             },
                             domProps: {
                               value: _vm.proposta.comissao_escritorio
@@ -46494,6 +46578,52 @@ var render = function() {
                                 _vm.$set(
                                   _vm.proposta,
                                   "comissao_escritorio",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          })
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "form-group col-md-4 col-sm-12" },
+                        [
+                          _c("label", { attrs: { for: "comissao_vendedor" } }, [
+                            _vm._v("Comissão do vendedor")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "money",
+                                rawName: "v-money",
+                                value: _vm.moeda_rendimento,
+                                expression: "moeda_rendimento"
+                              },
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.proposta.comissao_vendedor,
+                                expression: "proposta.comissao_vendedor"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: {
+                              type: "text",
+                              name: "comissao_vendedor",
+                              disabled: ""
+                            },
+                            domProps: { value: _vm.proposta.comissao_vendedor },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.proposta,
+                                  "comissao_vendedor",
                                   $event.target.value
                                 )
                               }
@@ -46550,6 +46680,7 @@ var render = function() {
                           _c("vue-simple-suggest", {
                             attrs: {
                               list: _vm.listabancos,
+                              styles: _vm.autoCompleteStyle,
                               "display-attribute": "nome",
                               "filter-by-query": true
                             },

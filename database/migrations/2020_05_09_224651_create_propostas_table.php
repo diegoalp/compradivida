@@ -27,6 +27,7 @@ class CreatePropostasTable extends Migration
             $table->float('rendimento');
             $table->float('comissao_total');
             $table->float('comissao_escritorio');
+            $table->float('comissao_vendedor');
             $table->integer('status');
             $table->string('agencia_quitacao');
             $table->string('banco_quitacao');
