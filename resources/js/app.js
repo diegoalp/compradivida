@@ -1,13 +1,12 @@
-import Vue from 'vue'
-import VueMask from 'v-mask'
-import Swal from 'sweetalert2'
-import JwPagination from 'jw-vue-pagination'
+/**
+ * First we will load all of this project's JavaScript dependencies which
+ * includes Vue and other libraries. It is a great starting point when
+ * building robust, powerful web applications using Vue and Laravel.
+ */
 
 require('./bootstrap');
 
 window.Vue = require('vue');
-Vue.use(require('vue-moment'));
-Vue.use(VueMask);
 
 /**
  * The following block of code may be used to automatically register your
@@ -20,10 +19,7 @@ Vue.use(VueMask);
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('jw-pagination', JwPagination);
-Vue.component('propostas-component', require('./components/PropostasComponent.vue').default);
-Vue.component('proposta-component', require('./components/PropostaComponent.vue').default);
-Vue.component('saldo-component', require('./components/SaldoComponent.vue').default);
+Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
