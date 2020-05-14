@@ -76,11 +76,10 @@ class PropostaController extends Controller
                 return error();
             }
         }elseif($request->input('status') == 4){
-            $dataAtual = Carbon::now();
             $saldo->saldo = $saldo->saldo + $proposta->valor_boleto + $proposta->rendimento;
             $saldo->save();
             $proposta->status = $request->input('status');
-            $proposta->data_finalizacao_boleto = $dataAtual;
+            $proposta->data_finalizacao_boleto = $request->input('data_quitacao');
             $proposta->save();
             return response(200);
         }else{

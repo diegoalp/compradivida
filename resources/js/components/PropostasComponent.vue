@@ -90,6 +90,10 @@
                                                                             <label for="data_quitacao">Data de quitação</label>
                                                                             <input type="date" class="form-control" name="data_quitacao" id="data_quitacao" v-model="data_quitacao" required>
                                                                         </div>
+                                                                        <div v-if="status == 4" class="form-group col-md-4">
+                                                                            <label for="data_finalização">Data de finalização</label>
+                                                                            <input type="date" class="form-control" name="data_finalização" id="data_finalização" v-model="data_finalizacao" required>
+                                                                        </div>
                                                                         <div class="form-group col-md-12"  style="vertical-align: bottom !important;">
                                                                             <button class="btn btn-success">ATUALIZAR</button>
                                                                         </div>
@@ -236,6 +240,7 @@ const customStyles = {
                 status: '',
                 saldo: '',
                 data_quitacao: '',
+                data_finalizacao: '',
                 buscar: '',
                 moeda: {
                     decimal: ',',
@@ -363,6 +368,7 @@ const customStyles = {
                 let formData = new FormData();
                 formData.append('status', this.status);
                 formData.append('data_quitacao', this.data_quitacao);
+                formData.append('data_finalizacao', this.data_finalizacao);
                 
                 axios.post('/attproposta/' + id, formData)
                     .then(function (response){
