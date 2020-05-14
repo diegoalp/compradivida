@@ -16,6 +16,7 @@
                     <th>Vendedor</th>
                     <th>Valor do boleto</th>
                     <th>Status</th>
+                    <th></th>
                     </tr>
                     <tr v-for="p in paginaDePropostas" v-bind:key="p.id">
                         <td><a href="#" data-toggle="modal" :data-target="'#PropostaModal' + p.id"><strong>{{ p.protocolo }}</strong></a></td>
@@ -29,6 +30,7 @@
                             <span v-if="p.status === 3" class="badge badge-primary">BOLETO QUITADO</span>
                             <span v-if="p.status === 4" class="badge badge-success">FINALIZADO</span>
                         </td>
+                        <td><a class="badge badge-pill badge-dark" :href="'/editar/proposta/' + p.id" data-toggle="modal" :data-target="'#EditarPropostaModal' + p.id">EDITAR</a></td>
                         <!-- Modal proposta -->
                         <div class="modal fade" :id="'PropostaModal' + p.id" tabindex="-1" role="dialog" aria-labelledby="PropostaModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-lg" role="document">
@@ -248,7 +250,7 @@ const customStyles = {
                     thousands: '.',
                     prefix: 'R$ ',
                     suffix: '',
-                    precision: 4,
+                    precision: 2,
                     masked: false
                 },
                 proposta:{
@@ -300,15 +302,22 @@ const customStyles = {
                 var valor = valor.replace("R$","");
                 var valor = valor.replace(",",".");
                 var valor = parseFloat(valor);
-                this.proposta.rendimento = (valor * 0.05).toFixed(4);
+                this.proposta.rendimento = (valor * 0.05).toFixed(2);
+            },
+            novoValorRendimento(valor){
+                var valor = valor.replace(".","");
+                var valor = valor.replace("R$","");
+                var valor = valor.replace(",",".");
+                var valor = parseFloat(valor);
+                this.proposta.rendimento = (valor * 0.05).toFixed(2);
             },
             valorComissao(){
                 var comissao = this.proposta.comissao_total.replace(".","");
                 var comissao = comissao.replace("R$","");
                 var comissao = comissao.replace(",",".");
                 var comissao = parseFloat(comissao);
-                this.proposta.comissao_escritorio = (comissao * 0.65).toFixed(4);
-                this.proposta.comissao_vendedor = (comissao * 0.35).toFixed(4);
+                this.proposta.comissao_escritorio = (comissao * 0.65).toFixed(2);
+                this.proposta.comissao_vendedor = (comissao * 0.35).toFixed(2);
             },
             formProposta(e){
             e.preventDefault();

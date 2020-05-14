@@ -22,7 +22,8 @@ Route::get('/', 'HomeController@index')->name('home');
 Route::get('/listapropostas', 'PropostaController@index');
 Route::post('/cadastrarproposta', 'PropostaController@store');
 Route::post('/attproposta/{id}', 'PropostaController@update');
-Route::get('/proposta/{id}','PropostaController@show');
+Route::get('/editar/proposta/{id}','PropostaController@show');
+Route::get('/comissoes/{vendedor}','PropostaController@comissoes');
 
 //Saldo
 Route::get('/getsaldo', 'ContaController@index');

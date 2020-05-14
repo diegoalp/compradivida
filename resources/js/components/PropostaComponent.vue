@@ -1,9 +1,9 @@
 <template>
     <div>
-        <div>
-            Nome: {{ dados }}
+        <div v-for="p in proposta">
+            {{ p }}
         </div>
-
+        </div>
     </div>
 </template>
 
@@ -14,12 +14,7 @@ import {
     VMoney
 } from 'v-money'
 export default {
-    props: {
-        proposta: {
-            type: Array,
-            required: true
-        }
-    },
+    props: ['proposta'],
     data() {
         return {
             dados: this.proposta,

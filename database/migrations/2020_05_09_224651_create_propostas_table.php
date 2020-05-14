@@ -24,6 +24,7 @@ class CreatePropostasTable extends Migration
             $table->float('valor_boleto');
             $table->date('data_vencimento_boleto');
             $table->date('data_quitacao_boleto')->nullable();
+            $table->date('data_finalizacao_boleto')->nullable();
             $table->float('rendimento');
             $table->float('comissao_total');
             $table->float('comissao_escritorio');
