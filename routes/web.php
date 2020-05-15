@@ -24,6 +24,7 @@ Route::post('/cadastrarproposta', 'PropostaController@store');
 Route::post('/attproposta/{id}', 'PropostaController@update');
 Route::get('/editar/proposta/{id}','PropostaController@show');
 Route::get('/comissoes/{vendedor}','PropostaController@comissoes');
+Route::get('/comissoes','PropostaController@comissoesEscritorio');
 
 //Saldo
 Route::get('/getsaldo', 'ContaController@index');

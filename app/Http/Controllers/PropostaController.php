@@ -29,6 +29,31 @@ class PropostaController extends Controller
         dd($comissaoVendedor);
 
     }
+    public function comissoesEscritorio(){
+        $mesAtual = Carbon::now()->month;
+        $anoAtual = Carbon::now()->year;
+        $propostas = Proposta::where('status',4)
+        ->whereMonth('data_finalizacao_boleto', '=',$mesAtual)
+        ->whereYear('data_finalizacao_boleto', '=',$anoAtual)
+        ->get();
+        $rendimento = 0;
+        $comissaoGeral = 0;
+        $comissaoEscritorio = 0;
+        $comissoesVendedores = 0;
+        foreach ($propostas as $key => $value){
+            $rendimento += $value['rendimento'];
+            $comissaoEscritorio += $value['comissao_escritorio'];
+            $comissaoGeral += $value['comissao_total'];
+            $comissoesVendedores += $value['comissao_vendedor'];
+        }
+        return response()->json([
+            'rendimento' => $rendimento,
+            'comissao_total' => $comissaoGeral,
+            'comissao_escritorio' => $comissaoEscritorio,
+            'comissoes_vendedor' => $comissoesVendedores,
+        ]);
+
+    }
     public function store(Request $request){
             
             $numero = Proposta::count()+1;

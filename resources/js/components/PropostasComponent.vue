@@ -1,13 +1,49 @@
 <template>
-    <div>
-        <div class="float-left" style="margin-bottom: 20px;">Saldo: 
-            <form @submit.prevent="attSaldo">
-                <input type="text" v-model="saldo"  v-money="moeda">
-            </form>
+<div class="row">
+    <div class="col-md-12">
+        <div class="float-left" style="margin-bottom: 20px;">
+                <h4 class="text-primary mt-3">Saldo: </h4>
+                    <form @submit.prevent="attSaldo">
+                        <input type="text" v-model="saldo" v-money="moeda">
+                    </form>  
         </div>
-        <div class="float-right" style="width: 350px;">Buscar
-            <input type="search" name="table_search" class="form-control pull-right" v-model="buscar">
-        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-3" style="margin-bottom: 20px;">
+                <div class="card border-success mx-sm-1 p-3">
+                    <span class="text-success text-center mt-3">Rendimento</span>
+                    <h2 class="text-success text-center mt-2">R${{ formatMoeda(comissoes.rendimento) }}</h2>
+                </div>
+            </div>
+            <div class="col-md-3" style="margin-bottom: 20px;">
+                <div class="card border-info mx-sm-1 p-3">
+                    <span class="text-info text-center mt-3">Comissão total</span>
+                    <h2 class="text-info text-center mt-2">R${{ formatMoeda(comissoes.comissao_total) }}</h2>
+                </div>
+            </div>
+            <div class="col-md-3" style="margin-bottom: 20px;">
+                <div class="card border-primary mx-sm-1 p-3">
+                    <span class="text-primary text-center mt-3">Comissão do escritório</span>
+                    <h2 class="text-primary text-center mt-2">R${{ formatMoeda(comissoes.comissao_escritorio) }}</h2>
+                </div>  
+            </div>
+            <div class="col-md-3" style="margin-bottom: 20px;">
+                <div class="card border-danger mx-sm-1 p-3">
+                    <span class="text-danger text-center mt-3">Comissões a pagar</span>
+                    <h2 class="text-danger text-center mt-2">R${{ formatMoeda(comissoes.comissoes_vendedor) }}</h2>
+                </div>   
+            </div>
+        </div>    
+    </div>
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">PROPOSTAS
+                <div class="float-right" style="width: 350px;">Buscar
+                    <input type="search" name="table_search" class="form-control pull-right" v-model="buscar">
+                </div>
+            </div>
+            <div class="card-body">
         <table class="table table-striped">
             <tbody><tr>
                     <th>Nº</th>
@@ -204,7 +240,13 @@
         </div>
         </div>
 
-    </div>
+        </div>
+                <div class="card-footer">
+                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#novaPropostaModal">CADASTRAR</button>
+                </div>
+            </div>  
+        </div>
+</div>        
 </template>
 
 <script>
@@ -237,6 +279,7 @@ const customStyles = {
                     defaultInput : "form-control",
                 },
                 listabancos: [],
+                comissoes: '',
                 status: '',
                 saldo: '',
                 data_quitacao: '',
@@ -292,6 +335,12 @@ const customStyles = {
                 axios.get('/listapropostas')
                     .then(response => {
                         this.listaPropostas = response.data;
+                    });
+            },
+            loadComissoes() {
+                axios.get('/comissoes')
+                    .then(response => {
+                        this.comissoes = response.data;
                     });
             },
             loadBancos: function () {
@@ -400,7 +449,6 @@ const customStyles = {
                 axios.get('/getsaldo')
                     .then(response => {
                         this.saldo = parseFloat(response.data.saldo).toFixed(2);
-                        console.log(this.saldo);
                     });
             },
             attSaldo(e){
@@ -469,6 +517,7 @@ const customStyles = {
             this.loadBancos();
             this.loadPropostas();
             this.loadSaldo();
+            this.loadComissoes();
         }
     }
 </script>
