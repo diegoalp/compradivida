@@ -444,6 +444,7 @@ const customStyles = {
                     });
                     this.loadPropostas();
                     this.loadSaldo();
+                    this.loadComissoes();
             },
             loadSaldo() {
                 axios.get('/getsaldo')

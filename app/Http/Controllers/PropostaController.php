@@ -104,7 +104,7 @@ class PropostaController extends Controller
             $saldo->saldo = $saldo->saldo + $proposta->valor_boleto + $proposta->rendimento;
             $saldo->save();
             $proposta->status = $request->input('status');
-            $proposta->data_finalizacao_boleto = $request->input('data_quitacao');
+            $proposta->data_finalizacao_boleto = $request->input('data_finalizacao');
             $proposta->save();
             return response(200);
         }else{
