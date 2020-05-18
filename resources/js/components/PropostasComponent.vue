@@ -112,7 +112,43 @@
                                                                     <label for="banco_quitacao">Banco de quitação</label>
                                                                     <input type="text" class="form-control text-uppercase" id="banco_quitacao" name="banco_quitacao" v-model="p.banco_quitacao" disabled>
                                                                 </div>
-                                                                <div v-if="p.status >= 2" class="form-group col-md-4 col-sm-12">
+                                                                <div v-if="p.valor_boleto" class="form-group col-md-4 col-sm-12">
+                                                                        <label for="valor_boleto">Valor do boleto*</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" name="valor_boleto" :value="formatMoeda(p.valor_boleto)" disabled>
+                                                                </div>
+                                                                <div v-else class="form-group col-md-4 col-sm-12">
+                                                                        <label for="valor_boleto">Valor do boleto*</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" @blur="valorRendimento" name="valor_boleto" v-model="novosdados.valor_boleto" required>
+                                                                </div>
+                                                                <div v-if="p.data_vencimento_boleto" class="form-group col-md-4 col-sm-12">
+                                                                    <label for="data_vencimento_boleto">Data do vencimento*</label>
+                                                                    <input type="text" class="form-control" name="data_vencimento_boleto" id="data_vencimento_boleto" v-model="p.data_vencimento_boleto" disabled>
+                                                                </div>
+                                                                <div v-else class="form-group col-md-4 col-sm-12">
+                                                                    <label for="data_vencimento_boleto">Data do vencimento*</label>
+                                                                    <input type="date" class="form-control" name="data_vencimento_boleto" id="data_vencimento_boleto" v-model="novosdados.data_vencimento_boleto" required>
+                                                                </div>
+                                                                <div v-if="p.rendimento" class="form-group col-md-4 col-sm-12">
+                                                                        <label for="rendimento">Rendimento</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" name="rendimento" :value="formatMoeda(p.rendimento)" disabled>
+                                                                </div>
+                                                                <div v-else class="form-group col-md-4 col-sm-12">
+                                                                        <label for="rendimento">Rendimento</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" name="rendimento" v-model="novosdados.rendimento" disabled>
+                                                                </div>
+                                                                <div class="form-group col-md-4 col-sm-12">
+                                                                        <label for="comissao_total">Comissão total</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_total" @blur="valorComissao" v-model="novosdados.comissao_total">
+                                                                </div>
+                                                                <div class="form-group col-md-4 col-sm-12">
+                                                                        <label for="comissao_escritorio">Comissão do escritório</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_escritorio" v-model="novosdados.comissao_escritorio" disabled>
+                                                                </div>
+                                                                <div class="form-group col-md-4 col-sm-12">
+                                                                        <label for="comissao_vendedor">Comissão do vendedor</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_vendedor" v-model="novosdados.comissao_vendedor" disabled>
+                                                                </div>
+                                                                <!-- <div v-if="p.status >= 2" class="form-group col-md-4 col-sm-12">
                                                                         <label for="valor_boleto">Valor do boleto</label>
                                                                         <input class="form-control" type="text" name="valor_boleto" :value="formatMoeda(p.valor_boleto)" disabled>
                                                                 </div>
@@ -135,7 +171,7 @@
                                                                 <div v-if="p.status >= 3" class="form-group col-md-4 col-sm-12">
                                                                         <label for="comissao_vendedor">Comissão vendedor</label>
                                                                         <input class="form-control" type="text" v-money="moeda" name="comissao_vendedor" :value="formatMoeda(p.comissao_vendedor)" disabled>
-                                                                </div>
+                                                                </div> -->
                                                                 <div class="form-group col-md-4">
                                                                     <label for="status">Atualizar status</label>
                                                                     <select id="status" class="form-control" name="status" v-model="novosdados.status">
@@ -145,46 +181,9 @@
                                                                         <option value="4" :selected="p.status === 4">FINALIZADO</option>
                                                                     </select>
                                                                 </div>
-                                                                <div class="form-group col-md-8"></div>
-                                                                <div v-if="novosdados.status == 2" class="form-group col-md-4 col-sm-12">
-                                                                        <label for="valor_boleto">Valor do boleto*</label>
-                                                                        <input class="form-control" type="text" v-money="moeda" @blur="valorRendimento" name="valor_boleto" v-model="novosdados.valor_boleto" required>
-                                                                </div>
-                                                                <div v-if="novosdados.status == 2" class="form-group col-md-4 col-sm-12">
-                                                                    <label for="data_vencimento_boleto">Data do vencimento*</label>
-                                                                    <input type="date" class="form-control" name="data_vencimento_boleto" id="data_vencimento_boleto" v-model="novosdados.data_vencimento_boleto" required>
-                                                                </div>
-                                                                <div v-if="novosdados.status == 2" class="form-group col-md-4 col-sm-12">
-                                                                        <label for="rendimento">Rendimento</label>
-                                                                        <input class="form-control" type="text" v-money="moeda" name="rendimento" v-model="novosdados.rendimento" disabled>
-                                                                </div>
-                                                                <div v-if="novosdados.status == 2" class="form-group col-md-4 col-sm-12">
-                                                                        <label for="comissao_total">Comissão total</label>
-                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_total" @blur="valorComissao" v-model="novosdados.comissao_total">
-                                                                </div>
-                                                                <div v-if="novosdados.status == 2" class="form-group col-md-4 col-sm-12">
-                                                                        <label for="comissao_escritorio">Comissão do escritório</label>
-                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_escritorio" v-model="novosdados.comissao_escritorio" disabled>
-                                                                </div>
-                                                                <div v-if="novosdados.status == 2" class="form-group col-md-4 col-sm-12">
-                                                                        <label for="comissao_vendedor">Comissão do vendedor</label>
-                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_vendedor" v-model="novosdados.comissao_vendedor" disabled>
-                                                                </div>
                                                                 <div v-if="novosdados.status == 3" class="form-group col-md-4">
                                                                     <label for="data_quitacao">Data de quitação</label>
                                                                     <input type="date" class="form-control" name="data_quitacao" id="data_quitacao" v-model="novosdados.data_quitacao" required>
-                                                                </div>
-                                                                <div v-if="novosdados.status == 3" class="form-group col-md-4 col-sm-12">
-                                                                        <label for="comissao_total">Comissão total</label>
-                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_total" @blur="valorComissao" v-model="novosdados.comissao_total" required>
-                                                                </div>
-                                                                <div v-if="novosdados.status == 3" class="form-group col-md-4 col-sm-12">
-                                                                        <label for="comissao_escritorio">Comissão do escritório</label>
-                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_escritorio" v-model="novosdados.comissao_escritorio" disabled>
-                                                                </div>
-                                                                <div v-if="novosdados.status == 3" class="form-group col-md-4 col-sm-12">
-                                                                        <label for="comissao_vendedor">Comissão do vendedor</label>
-                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_vendedor" v-model="novosdados.comissao_vendedor" disabled>
                                                                 </div>
                                                                 <div v-if="novosdados.status == 4" class="form-group col-md-4">
                                                                     <label for="data_finalização">Data de finalização</label>
