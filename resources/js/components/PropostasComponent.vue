@@ -527,18 +527,21 @@ const customStyles = {
                                     icon: 'success',
                                     showCancelButton: false,
                                     showConfirmButton: false,
-                                })
-                }, (error) => {
-                    Swal.fire({
+                    })
+                }).catch(function (error) {
+
+                        currentObj.output = error;
+                        Swal.fire({
                                     title: 'Ops!',
                                     text: 'Não foi possível remover esta proposta.',
                                     icon: 'error',
                                     showCancelButton: false,
                                     showConfirmButton: false,
                                 })
-                })
+
+            });
             this.loadPropostas();
-        },
+            },
             formAtualizarProposta(id){
                 let currentObj = this;
                 
