@@ -51,22 +51,155 @@
                     <th>CPF</th>
                     <th>Vendedor</th>
                     <th>Valor do boleto</th>
+                    <th>Vencimento</th>
                     <th>Status</th>
-                    <th></th>
                     </tr>
                     <tr v-for="p in paginaDePropostas" v-bind:key="p.id">
                         <td><a href="#" data-toggle="modal" :data-target="'#PropostaModal' + p.id"><strong>{{ p.protocolo }}</strong></a></td>
                         <td>{{ p.nome }}</td>
                         <td>{{ p.cpf }}</td>
                         <td>{{ p.nome_vendedor }}</td>
-                        <td>R$ {{ formatMoeda(p.valor_boleto) }}</td>
+                        <td>R$ {{ formatMoeda(p.valor_boleto ) }}</td>
+                        <td>{{ p.data_vencimento_boleto | moment("DD/MM/YYYY") }}</td>
                         <td>
                             <span v-if="p.status === 1" class="badge badge-warning">CONTA ABERTA</span>
                             <span v-if="p.status === 2" class="badge badge-danger">BOLETO PARA QUITAR</span>
                             <span v-if="p.status === 3" class="badge badge-primary">BOLETO QUITADO</span>
                             <span v-if="p.status === 4" class="badge badge-success">FINALIZADO</span>
+                            <span v-if="p.status !== 4"><a href="#" class="badge badge-pill badge-dark" data-toggle="modal" :data-target="'#EditarPropostaModal'+p.id">EDITAR</a></span>
+                            <span v-if="p.status == 1 || p.status == 2"><a href="#" class="badge badge-pill badge-danger" @click="removerProposta(p.id)">EXCLUIR</a></span>
                         </td>
-                        <td><a class="badge badge-pill badge-dark" :href="'/editar/proposta/' + p.id" data-toggle="modal" :data-target="'#EditarPropostaModal' + p.id">EDITAR</a></td>
+                        <!-- Modal editar proposta -->
+                        <div class="modal fade" :id="'EditarPropostaModal' + p.id" tabindex="-1" role="dialog" aria-labelledby="EditarPropostaModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="EditarPropostaModalLabel">Nº {{ p.protocolo }}
+                                            </h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form @submit.prevent="formAtualizarProposta(p.id)">
+                                                <div class="row">
+                                                                <div class="form-group col-md-12">
+                                                                    <label for="nome">Nome</label>
+                                                                    <input type="text" class="form-control text-uppercase" id="nome" aria-describedby="nomeHelp" v-model="p.nome" disabled>
+                                                                </div>
+                                                                <div class="form-group col-md-4">
+                                                                    <label for="cpf">CPF</label>
+                                                                    <input type="text" class="form-control" v-mask="'###.###.###-##'" id="cpf" name="cpf" v-model="p.cpf" disabled>
+                                                                </div>
+                                                                <div class="form-group col-md-4">
+                                                                    <label for="telefone">Telefone</label>
+                                                                    <input type="text" class="form-control" id="telefone" v-mask="'(##) #####-####'" name="telefone" v-model="p.telefone" disabled>
+                                                                </div>
+                                                                <div class="form-group col-md-4">
+                                                                    <label for="vendedor">Vendedor</label>
+                                                                    <input type="text" class="form-control text-uppercase" id="vendedor" name="vendedor" v-model="p.nome_vendedor" disabled>
+                                                                </div>
+                                                                <div class="col-12"><hr></div>
+                                                                <div class="form-group col-md-4">
+                                                                    <label for="banco_boleto">Banco do boleto</label>
+                                                                    <input type="text" class="form-control text-uppercase" id="banco_boleto" name="banco_boleto" v-model="p.banco_boleto" disabled>
+                                                                </div>
+                                                                <div class="form-group col-md-4">
+                                                                    <label for="agencia">Agência</label>
+                                                                    <input type="text" class="form-control text-uppercase" id="agencia" name="agencia" v-model="p.agencia_quitacao" disabled>
+                                                                </div>
+                                                                <div class="form-group col-md-4">
+                                                                    <label for="banco_quitacao">Banco de quitação</label>
+                                                                    <input type="text" class="form-control text-uppercase" id="banco_quitacao" name="banco_quitacao" v-model="p.banco_quitacao" disabled>
+                                                                </div>
+                                                                <div v-if="p.status >= 2" class="form-group col-md-4 col-sm-12">
+                                                                        <label for="valor_boleto">Valor do boleto</label>
+                                                                        <input class="form-control" type="text" name="valor_boleto" :value="formatMoeda(p.valor_boleto)" disabled>
+                                                                </div>
+                                                                <div v-if="p.status >= 2" class="form-group col-md-4 col-sm-12">
+                                                                    <label for="data_vencimento_boleto">Data do vencimento</label>
+                                                                    <input type="text" class="form-control" name="data_vencimento_boleto" id="data_vencimento_boleto" :value="p.data_vencimento_boleto | moment('DD/MM/YYYY')" disabled>
+                                                                </div>
+                                                                <div v-if="p.status >= 2" class="form-group col-md-4 col-sm-12">
+                                                                        <label for="rendimento">Rendimento</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" name="rendimento" :value="formatMoeda(p.rendimento)" disabled>
+                                                                </div>
+                                                                <div v-if="p.status >= 3" class="form-group col-md-4 col-sm-12">
+                                                                        <label for="comissao_total">Comissão total</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_total" :value="formatMoeda(p.comissao_total)" disabled>
+                                                                </div>
+                                                                <div v-if="p.status >= 3" class="form-group col-md-4 col-sm-12">
+                                                                        <label for="comissao_escritorio">Comissão escritório</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_escritorio" :value="formatMoeda(p.comissao_escritorio)" disabled>
+                                                                </div>
+                                                                <div v-if="p.status >= 3" class="form-group col-md-4 col-sm-12">
+                                                                        <label for="comissao_vendedor">Comissão vendedor</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_vendedor" :value="formatMoeda(p.comissao_vendedor)" disabled>
+                                                                </div>
+                                                                <div class="form-group col-md-4">
+                                                                    <label for="status">Atualizar status</label>
+                                                                    <select id="status" class="form-control" name="status" v-model="novosdados.status">
+                                                                        <option value="1" :selected="p.status === 1">CONTA ABERTA</option>
+                                                                        <option value="2" :selected="p.status === 2">BOLETO PARA QUITAR</option>
+                                                                        <option value="3" :selected="p.status === 3">BOLETO QUITADO</option>
+                                                                        <option value="4" :selected="p.status === 4">FINALIZADO</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group col-md-8"></div>
+                                                                <div v-if="novosdados.status == 2" class="form-group col-md-4 col-sm-12">
+                                                                        <label for="valor_boleto">Valor do boleto*</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" @blur="valorRendimento" name="valor_boleto" v-model="novosdados.valor_boleto" required>
+                                                                </div>
+                                                                <div v-if="novosdados.status == 2" class="form-group col-md-4 col-sm-12">
+                                                                    <label for="data_vencimento_boleto">Data do vencimento*</label>
+                                                                    <input type="date" class="form-control" name="data_vencimento_boleto" id="data_vencimento_boleto" v-model="novosdados.data_vencimento_boleto" required>
+                                                                </div>
+                                                                <div v-if="novosdados.status == 2" class="form-group col-md-4 col-sm-12">
+                                                                        <label for="rendimento">Rendimento</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" name="rendimento" v-model="novosdados.rendimento" disabled>
+                                                                </div>
+                                                                <div v-if="novosdados.status == 2" class="form-group col-md-4 col-sm-12">
+                                                                        <label for="comissao_total">Comissão total</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_total" @blur="valorComissao" v-model="novosdados.comissao_total">
+                                                                </div>
+                                                                <div v-if="novosdados.status == 2" class="form-group col-md-4 col-sm-12">
+                                                                        <label for="comissao_escritorio">Comissão do escritório</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_escritorio" v-model="novosdados.comissao_escritorio" disabled>
+                                                                </div>
+                                                                <div v-if="novosdados.status == 2" class="form-group col-md-4 col-sm-12">
+                                                                        <label for="comissao_vendedor">Comissão do vendedor</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_vendedor" v-model="novosdados.comissao_vendedor" disabled>
+                                                                </div>
+                                                                <div v-if="novosdados.status == 3" class="form-group col-md-4">
+                                                                    <label for="data_quitacao">Data de quitação</label>
+                                                                    <input type="date" class="form-control" name="data_quitacao" id="data_quitacao" v-model="novosdados.data_quitacao" required>
+                                                                </div>
+                                                                <div v-if="novosdados.status == 3" class="form-group col-md-4 col-sm-12">
+                                                                        <label for="comissao_total">Comissão total</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_total" @blur="valorComissao" v-model="novosdados.comissao_total" required>
+                                                                </div>
+                                                                <div v-if="novosdados.status == 3" class="form-group col-md-4 col-sm-12">
+                                                                        <label for="comissao_escritorio">Comissão do escritório</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_escritorio" v-model="novosdados.comissao_escritorio" disabled>
+                                                                </div>
+                                                                <div v-if="novosdados.status == 3" class="form-group col-md-4 col-sm-12">
+                                                                        <label for="comissao_vendedor">Comissão do vendedor</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_vendedor" v-model="novosdados.comissao_vendedor" disabled>
+                                                                </div>
+                                                                <div v-if="novosdados.status == 4" class="form-group col-md-4">
+                                                                    <label for="data_finalização">Data de finalização</label>
+                                                                    <input type="date" class="form-control" name="data_finalização" id="data_finalização" v-model="novosdados.data_finalizacao" required>
+                                                                </div>
+                                                                <div class="form-group col-md-12"  style="vertical-align: bottom !important;">
+                                                                    <button class="btn btn-success">ATUALIZAR</button>
+                                                                </div>                                                                             
+                                                            </div>
+                                            </form>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>    
+                        <!-- Fim Modal editar proposta --> 
                         <!-- Modal proposta -->
                         <div class="modal fade" :id="'PropostaModal' + p.id" tabindex="-1" role="dialog" aria-labelledby="PropostaModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-lg" role="document">
@@ -109,7 +242,7 @@
                                                         <td>Agência de quitação: {{ p.agencia_quitacao }}</td>
                                                         <td>Banco de quitação: {{ p.banco_quitacao }}</td>
                                                     </tr>   
-                                                    <tr v-if="p.status !== 4">
+                                                    <!-- <tr v-if="p.status !== 4">
                                                         <td colspan="3">   
                                                             <form @submit.prevent="formAttProposta(p.id)">
                                                                     <div class="row">
@@ -136,7 +269,7 @@
                                                                     </div>
                                                                 </form>
                                                         </td>
-                                                    </tr>
+                                                    </tr> -->
                                             </table>
                                             
                                         </div>
@@ -190,30 +323,6 @@
                                     :styles="autoCompleteStyle"
                                     :filter-by-query="true">
                                 </vue-simple-suggest>
-                            </div>
-                            <div class="form-group col-md-4 col-sm-12">
-                                    <label for="valor_boleto">Valor do boleto</label>
-                                    <input class="form-control" type="text" v-money="moeda" @blur="valorRendimento" name="valor_boleto" v-model="proposta.valor_boleto" required>
-                            </div>
-                            <div class="form-group col-md-4 col-sm-12">
-                                <label for="data_vencimento_boleto">Data do vencimento</label>
-                                <input type="date" class="form-control" name="data_vencimento_boleto" id="data_vencimento_boleto" v-model="proposta.data_vencimento_boleto" required>
-                            </div>
-                            <div class="form-group col-md-4 col-sm-12">
-                                    <label for="rendimento">Rendimento</label>
-                                    <input class="form-control" type="text" v-money="moeda_rendimento" name="rendimento" v-model="proposta.rendimento" disabled>
-                            </div>
-                            <div class="form-group col-md-4 col-sm-12">
-                                    <label for="comissao_total">Comissão total</label>
-                                    <input class="form-control" type="text" v-money="moeda" name="comissao_total" @blur="valorComissao" v-model="proposta.comissao_total" required>
-                            </div>
-                            <div class="form-group col-md-4 col-sm-12">
-                                    <label for="comissao_escritorio">Comissão do escritório</label>
-                                    <input class="form-control" type="text" v-money="moeda_rendimento" name="comissao_escritorio" v-model="proposta.comissao_escritorio" disabled>
-                            </div>
-                            <div class="form-group col-md-4 col-sm-12">
-                                    <label for="comissao_vendedor">Comissão do vendedor</label>
-                                    <input class="form-control" type="text" v-money="moeda_rendimento" name="comissao_vendedor" v-model="proposta.comissao_vendedor" disabled>
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="agencia">Agência</label>
@@ -291,15 +400,7 @@ const customStyles = {
                     prefix: 'R$ ',
                     suffix: '',
                     precision: 2,
-                    masked: false
-                },
-                moeda_rendimento: {
-                    decimal: ',',
-                    thousands: '.',
-                    prefix: 'R$ ',
-                    suffix: '',
-                    precision: 2,
-                    masked: false
+                    masked: true
                 },
                 proposta:{
                     nome: '',
@@ -307,14 +408,19 @@ const customStyles = {
                     cpf: '',
                     telefone: '',
                     banco_boleto: '',
+                    banco_quitacao: '',
+                    agencia_quitacao: ''
+                },
+                novosdados: {
                     data_vencimento_boleto: '',
                     valor_boleto: '',
                     rendimento: '',
                     comissao_total: '',
                     comissao_escritorio: '',
                     comissao_vendedor: '',
-                    banco_quitacao: '',
-                    agencia_quitacao: ''
+                    status: '',
+                    data_quitacao: '',
+                    data_finalizacao: ''
                 },
                 listaPropostas: [],
                 paginaDePropostas: [],
@@ -352,26 +458,26 @@ const customStyles = {
                 })
             },
             valorRendimento(){
-                var valor = this.proposta.valor_boleto.replace(".","");
+                var valor = this.novosdados.valor_boleto.replace(".","");
                 var valor = valor.replace("R$","");
                 var valor = valor.replace(",",".");
                 var valor = parseFloat(valor);
-                this.proposta.rendimento = (valor * 0.05).toFixed(2);
+                this.novosdados.rendimento = (valor * 0.05).toFixed(2);
             },
             novoValorRendimento(valor){
                 var valor = valor.replace(".","");
                 var valor = valor.replace("R$","");
                 var valor = valor.replace(",",".");
                 var valor = parseFloat(valor);
-                this.proposta.rendimento = (valor * 0.05).toFixed(2);
+                this.novosdados.rendimento = (valor * 0.05).toFixed(2);
             },
             valorComissao(){
-                var comissao = this.proposta.comissao_total.replace(".","");
+                var comissao = this.novosdados.comissao_total.replace(".","");
                 var comissao = comissao.replace("R$","");
                 var comissao = comissao.replace(",",".");
                 var comissao = parseFloat(comissao);
-                this.proposta.comissao_escritorio = (comissao * 0.65).toFixed(2);
-                this.proposta.comissao_vendedor = (comissao * 0.35).toFixed(2);
+                this.novosdados.comissao_escritorio = (comissao * 0.65).toFixed(2);
+                this.novosdados.comissao_vendedor = (comissao * 0.35).toFixed(2);
             },
             formProposta(e){
             e.preventDefault();
@@ -411,6 +517,57 @@ const customStyles = {
                             $('body').removeClass('modal-open');
                     this.loadPropostas();
                     this.loadSaldo();
+            },
+            removerProposta(id) {
+            axios.delete('/proposta/' + id)
+                .then((response) => {
+                    Swal.fire({
+                                    title: 'Sucesso',
+                                    text: 'Proposta removida com sucesso',
+                                    icon: 'success',
+                                    showCancelButton: false,
+                                    showConfirmButton: false,
+                                })
+                }, (error) => {
+                    Swal.fire({
+                                    title: 'Ops!',
+                                    text: 'Não foi possível remover esta proposta.',
+                                    icon: 'error',
+                                    showCancelButton: false,
+                                    showConfirmButton: false,
+                                })
+                })
+            this.loadPropostas();
+        },
+            formAtualizarProposta(id){
+                let currentObj = this;
+                
+                axios.post('/attproposta/' + id, this.novosdados)
+                    .then(function (response){
+                        currentObj.success = response.data.success;
+                        Swal.fire({
+                                    title: 'Sucesso',
+                                    text: 'Proposta atualizada com sucesso!',
+                                    icon: 'success',
+                                    showCancelButton: false,
+                                    showConfirmButton: true,
+                        })
+                    })
+                    .catch(function (error) {
+
+                        currentObj.output = error;
+                        Swal.fire({
+                                    title: 'Ops!',
+                                    text: 'Não foi possível atualizar esta proposta.',
+                                    icon: 'error',
+                                    showCancelButton: false,
+                                    showConfirmButton: false,
+                                })
+
+                    });
+                    this.loadPropostas();
+                    this.loadSaldo();
+                    this.loadComissoes();
             },
             formAttProposta(id){
                 let currentObj = this;

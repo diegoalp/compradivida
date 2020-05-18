@@ -15,11 +15,14 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
+Route::middleware(['auth'])->group(function () {
+
 Route::get('/', 'HomeController@index')->name('home');
 
 
 //Propostas
 Route::get('/listapropostas', 'PropostaController@index');
+Route::delete('proposta/{id}','PropostaController@destroy');
 Route::post('/cadastrarproposta', 'PropostaController@store');
 Route::post('/attproposta/{id}', 'PropostaController@update');
 Route::get('/editar/proposta/{id}','PropostaController@show');
@@ -29,3 +32,5 @@ Route::get('/comissoes','PropostaController@comissoesEscritorio');
 //Saldo
 Route::get('/getsaldo', 'ContaController@index');
 Route::post('/attsaldo/{id}', 'ContaController@update');
+
+});

@@ -65,14 +65,12 @@ class PropostaController extends Controller
             $proposta->agencia_quitacao = mb_strtoupper($request->input('agencia_quitacao'));
             $proposta->telefone = $request->input('telefone');
             $proposta->cpf = $request->input('cpf');
-            $proposta->data_vencimento_boleto = $request->input('data_vencimento_boleto');
             $proposta->banco_boleto = $request->input('banco_boleto');
             $proposta->banco_quitacao = $request->input('banco_quitacao');
-            $proposta->valor_boleto = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('valor_boleto'))));
-            $proposta->rendimento = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('rendimento'))));
-            $proposta->comissao_total = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_total'))));
-            $proposta->comissao_escritorio = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_escritorio'))));
-            $proposta->comissao_vendedor = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_vendedor'))));
+            
+            // $proposta->comissao_total = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_total'))));
+            // $proposta->comissao_escritorio = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_escritorio'))));
+            // $proposta->comissao_vendedor = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_vendedor'))));
             $proposta->status = 1;
             $proposta->save();
 
@@ -88,11 +86,31 @@ class PropostaController extends Controller
         $proposta = Proposta::find($id);
         $saldo = Conta::find(1);
         
-        if($request->input('status') == 3){
+        if($request->input('status') == 2){
+            $proposta->data_vencimento_boleto = $request->input('data_vencimento_boleto');
+            if($request->input('valor_boleto') !== "R$ 0,00"){
+                $proposta->valor_boleto = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('valor_boleto'))));
+                $proposta->rendimento = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('rendimento'))));
+            }
+            if($request->input('comissao_total') !== "R$ 0,00"){
+                $proposta->comissao_total = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_total'))));
+                $proposta->comissao_escritorio = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_escritorio'))));
+                $proposta->comissao_vendedor = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_vendedor'))));
+            }
+            $proposta->status = $request->input('status');
+            $proposta->save();
+
+        }
+        elseif($request->input('status') == 3){
             if($saldo->saldo >= $proposta->valor_boleto){
                 $saldo->saldo = $saldo->saldo - $proposta->valor_boleto;
                 $saldo->save();
 
+                if($request->input('comissao_total') !== "R$ 0,00"){
+                    $proposta->comissao_total = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_total'))));
+                    $proposta->comissao_escritorio = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_escritorio'))));
+                    $proposta->comissao_vendedor = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_vendedor'))));
+                }
                 $proposta->status = $request->input('status');
                 $proposta->data_quitacao_boleto = $request->input('data_quitacao');
                 $proposta->save();
@@ -115,5 +133,14 @@ class PropostaController extends Controller
         
         
         
+    }
+    public function destroy($id)
+    {
+        $proposta = Proposta::find($id);
+        if (isset($proposta)) {
+            $proposta->delete();
+            return response('OK', 200);
+        }
+        return response('Proposta não encontrada', 404);
     }
 }
