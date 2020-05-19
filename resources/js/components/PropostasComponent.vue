@@ -60,7 +60,7 @@
                         <td>{{ p.cpf }}</td>
                         <td>{{ p.nome_vendedor }}</td>
                         <td>R$ {{ formatMoeda(p.valor_boleto ) }}</td>
-                        <td>{{ p.data_vencimento_boleto | moment("DD/MM/YYYY") }}</td>
+                        <td>{{ formatData(p.data_vencimento_boleto) }}</td>
                         <td>
                             <span v-if="p.status === 1" class="badge badge-warning">CONTA ABERTA</span>
                             <span v-if="p.status === 2" class="badge badge-danger">BOLETO PARA QUITAR</span>
@@ -383,7 +383,7 @@ const customStyles = {
         },
         methods:{
             formatData(data) {
-                return Vue.moment(data).format('DD/MM/YYYY');
+                return Vue.moment(data).add(1, 'd').format('DD/MM/YYYY');
             },
             formatMoeda(value) {
                 let val = (value/1).toFixed(2).replace('.', ',')
