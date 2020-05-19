@@ -5,6 +5,7 @@ import JwPagination from 'jw-vue-pagination'
 
 require('./bootstrap');
 
+
 window.Vue = require('vue');
 Vue.use(require('vue-moment'));
 Vue.use(VueMask);
@@ -22,8 +23,6 @@ Vue.use(VueMask);
 
 Vue.component('jw-pagination', JwPagination);
 Vue.component('propostas-component', require('./components/PropostasComponent.vue').default);
-Vue.component('proposta-component', require('./components/PropostaComponent.vue').default);
-Vue.component('saldo-component', require('./components/SaldoComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

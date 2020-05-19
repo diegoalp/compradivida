@@ -642,7 +642,6 @@ const customStyles = {
             this.loadBancos();
             this.loadPropostas();
             this.loadSaldo();
-            this.loadComissoes();
-        }
+            this.loadComissoes();        }
     }
 </script>
