@@ -122,7 +122,7 @@
                                                                 </div>
                                                                 <div v-if="p.data_vencimento_boleto" class="form-group col-md-4 col-sm-12">
                                                                     <label for="data_vencimento_boleto">Data do vencimento*</label>
-                                                                    <input type="text" class="form-control" name="data_vencimento_boleto" id="data_vencimento_boleto" v-model="p.data_vencimento_boleto" disabled>
+                                                                    <input type="text" class="form-control" name="data_vencimento_boleto" id="data_vencimento_boleto" :value="formatData(p.data_vencimento_boleto)" disabled>
                                                                 </div>
                                                                 <div v-else class="form-group col-md-4 col-sm-12">
                                                                     <label for="data_vencimento_boleto">Data do vencimento*</label>
@@ -137,41 +137,20 @@
                                                                         <input class="form-control" type="text" v-money="moeda" name="rendimento" v-model="novosdados.rendimento" disabled>
                                                                 </div>
                                                                 <div class="form-group col-md-4 col-sm-12">
-                                                                        <label for="comissao_total">Comissão total</label>
-                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_total" @blur="valorComissao" v-model="novosdados.comissao_total">
+                                                                    <label for="comissao_total">Comissão total</label>
+                                                                    <small id="comissao_totalHelp" v-if="p.comissao_total" class="form-text text-muted">Valor atual: {{ formatMoeda(p.comissao_total) }}</small>
+                                                                    <input class="form-control" type="text" v-money="moeda" name="comissao_total" @blur="valorComissao" v-model="novosdados.comissao_total">
                                                                 </div>
                                                                 <div class="form-group col-md-4 col-sm-12">
                                                                         <label for="comissao_escritorio">Comissão do escritório</label>
+                                                                        <small id="comissao_escritorioHelp" v-if="p.comissao_escritorio" class="form-text text-muted">Valor atual: {{ formatMoeda(p.comissao_escritorio) }}</small>
                                                                         <input class="form-control" type="text" v-money="moeda" name="comissao_escritorio" v-model="novosdados.comissao_escritorio" disabled>
                                                                 </div>
                                                                 <div class="form-group col-md-4 col-sm-12">
                                                                         <label for="comissao_vendedor">Comissão do vendedor</label>
+                                                                        <small id="comissao_vendedorHelp" v-if="p.comissao_vendedor" class="form-text text-muted">Valor atual: {{ formatMoeda(p.comissao_vendedor) }}</small>
                                                                         <input class="form-control" type="text" v-money="moeda" name="comissao_vendedor" v-model="novosdados.comissao_vendedor" disabled>
                                                                 </div>
-                                                                <!-- <div v-if="p.status >= 2" class="form-group col-md-4 col-sm-12">
-                                                                        <label for="valor_boleto">Valor do boleto</label>
-                                                                        <input class="form-control" type="text" name="valor_boleto" :value="formatMoeda(p.valor_boleto)" disabled>
-                                                                </div>
-                                                                <div v-if="p.status >= 2" class="form-group col-md-4 col-sm-12">
-                                                                    <label for="data_vencimento_boleto">Data do vencimento</label>
-                                                                    <input type="text" class="form-control" name="data_vencimento_boleto" id="data_vencimento_boleto" :value="p.data_vencimento_boleto | moment('DD/MM/YYYY')" disabled>
-                                                                </div>
-                                                                <div v-if="p.status >= 2" class="form-group col-md-4 col-sm-12">
-                                                                        <label for="rendimento">Rendimento</label>
-                                                                        <input class="form-control" type="text" v-money="moeda" name="rendimento" :value="formatMoeda(p.rendimento)" disabled>
-                                                                </div>
-                                                                <div v-if="p.status >= 3" class="form-group col-md-4 col-sm-12">
-                                                                        <label for="comissao_total">Comissão total</label>
-                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_total" :value="formatMoeda(p.comissao_total)" disabled>
-                                                                </div>
-                                                                <div v-if="p.status >= 3" class="form-group col-md-4 col-sm-12">
-                                                                        <label for="comissao_escritorio">Comissão escritório</label>
-                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_escritorio" :value="formatMoeda(p.comissao_escritorio)" disabled>
-                                                                </div>
-                                                                <div v-if="p.status >= 3" class="form-group col-md-4 col-sm-12">
-                                                                        <label for="comissao_vendedor">Comissão vendedor</label>
-                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_vendedor" :value="formatMoeda(p.comissao_vendedor)" disabled>
-                                                                </div> -->
                                                                 <div class="form-group col-md-4">
                                                                     <label for="status">Atualizar status</label>
                                                                     <select id="status" class="form-control" name="status" v-model="novosdados.status">
@@ -241,34 +220,6 @@
                                                         <td>Agência de quitação: {{ p.agencia_quitacao }}</td>
                                                         <td>Banco de quitação: {{ p.banco_quitacao }}</td>
                                                     </tr>   
-                                                    <!-- <tr v-if="p.status !== 4">
-                                                        <td colspan="3">   
-                                                            <form @submit.prevent="formAttProposta(p.id)">
-                                                                    <div class="row">
-                                                                        <div class="form-group col-md-4">
-                                                                            <label for="status">Atualizar status</label>
-                                                                            <select id="status" class="form-control" name="status" v-model="status">
-                                                                                <option value="1">CONTA ABERTA</option>
-                                                                                <option value="2">BOLETO PARA QUITAR</option>
-                                                                                <option value="3">BOLETO QUITADO</option>
-                                                                                <option value="4">FINALIZADO</option>
-                                                                            </select>
-                                                                        </div>
-                                                                        <div v-if="status == 3" class="form-group col-md-4">
-                                                                            <label for="data_quitacao">Data de quitação</label>
-                                                                            <input type="date" class="form-control" name="data_quitacao" id="data_quitacao" v-model="data_quitacao" required>
-                                                                        </div>
-                                                                        <div v-if="status == 4" class="form-group col-md-4">
-                                                                            <label for="data_finalização">Data de finalização</label>
-                                                                            <input type="date" class="form-control" name="data_finalização" id="data_finalização" v-model="data_finalizacao" required>
-                                                                        </div>
-                                                                        <div class="form-group col-md-12"  style="vertical-align: bottom !important;">
-                                                                            <button class="btn btn-success">ATUALIZAR</button>
-                                                                        </div>
-                                                                    </div>
-                                                                </form>
-                                                        </td>
-                                                    </tr> -->
                                             </table>
                                             
                                         </div>
@@ -364,6 +315,7 @@ import {VMoney} from 'v-money'
 import VueSimpleSuggest from 'vue-simple-suggest'
 import 'vue-simple-suggest/dist/styles.css'
 
+
 const customLabels = {
     first: '<< Primeira',
     last: 'Última >>',
@@ -428,6 +380,9 @@ const customStyles = {
             }
         },
         methods:{
+            formatData(data) {
+                return Vue.moment(data).format('DD/MM/YYYY');
+            },
             formatMoeda(value) {
                 let val = (value/1).toFixed(2).replace('.', ',')
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
