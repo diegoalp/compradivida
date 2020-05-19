@@ -49,9 +49,9 @@
                     <th style="cursor: pointer;" v-on:click="ordemColuna('protocolo')">Nº</th>
                     <th style="cursor: pointer;" v-on:click="ordemColuna('nome')">Nome</th>
                     <th style="cursor: pointer;" v-on:click="ordemColuna('cpf')">CPF</th>
-                    <th style="cursor: pointer;" v-on:click="ordemColuna('vendedor')">Vendedor</th>
+                    <th style="cursor: pointer;" v-on:click="ordemColuna('nome_vendedor')">Vendedor</th>
                     <th style="cursor: pointer;" v-on:click="ordemColuna('valor_boleto')">Valor do boleto</th>
-                    <th style="cursor: pointer;" v-on:click="ordemColuna('vencimento')">Vencimento</th>
+                    <th style="cursor: pointer;" v-on:click="ordemColuna('data_vencimento_boleto')">Vencimento</th>
                     <th style="cursor: pointer;" v-on:click="ordemColuna('status')">Status</th>
                     </tr>
                     <tr v-for="p in paginaDePropostas" v-bind:key="p.id">
