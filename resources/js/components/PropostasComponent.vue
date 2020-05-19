@@ -84,76 +84,76 @@
                                             <form @submit.prevent="formAtualizarProposta(p.id)">
                                                 <div class="row">
                                                                 <div class="form-group col-md-12">
-                                                                    <label for="nome">Nome</label>
-                                                                    <input type="text" class="form-control text-uppercase" id="nome" aria-describedby="nomeHelp" v-model="p.nome" disabled>
+                                                                    <label >Nome</label>
+                                                                    <input type="text" class="form-control text-uppercase" v-model="p.nome" disabled>
                                                                 </div>
                                                                 <div class="form-group col-md-4">
-                                                                    <label for="cpf">CPF</label>
-                                                                    <input type="text" class="form-control" v-mask="'###.###.###-##'" id="cpf" name="cpf" v-model="p.cpf" disabled>
+                                                                    <label>CPF</label>
+                                                                    <input type="text" class="form-control" v-mask="'###.###.###-##'" v-model="p.cpf" disabled>
                                                                 </div>
                                                                 <div class="form-group col-md-4">
-                                                                    <label for="telefone">Telefone</label>
-                                                                    <input type="text" class="form-control" id="telefone" v-mask="'(##) #####-####'" name="telefone" v-model="p.telefone" disabled>
+                                                                    <label for="telefone_cliente">Telefone</label>
+                                                                    <input type="text" class="form-control" v-mask="'(##) #####-####'" v-model="p.telefone" disabled>
                                                                 </div>
                                                                 <div class="form-group col-md-4">
-                                                                    <label for="vendedor">Vendedor</label>
-                                                                    <input type="text" class="form-control text-uppercase" id="vendedor" name="vendedor" v-model="p.nome_vendedor" disabled>
+                                                                    <label>Vendedor</label>
+                                                                    <input type="text" class="form-control text-uppercase" v-model="p.nome_vendedor" disabled>
                                                                 </div>
                                                                 <div class="col-12"><hr></div>
                                                                 <div class="form-group col-md-4">
-                                                                    <label for="banco_boleto">Banco do boleto</label>
-                                                                    <input type="text" class="form-control text-uppercase" id="banco_boleto" name="banco_boleto" v-model="p.banco_boleto" disabled>
+                                                                    <label>Banco do boleto</label>
+                                                                    <input type="text" class="form-control text-uppercase" v-model="p.banco_boleto" disabled>
                                                                 </div>
                                                                 <div class="form-group col-md-4">
-                                                                    <label for="agencia">Agência</label>
-                                                                    <input type="text" class="form-control text-uppercase" id="agencia" name="agencia" v-model="p.agencia_quitacao" disabled>
+                                                                    <label>Agência</label>
+                                                                    <input type="text" class="form-control text-uppercase" v-model="p.agencia_quitacao" disabled>
                                                                 </div>
                                                                 <div class="form-group col-md-4">
-                                                                    <label for="banco_quitacao">Banco de quitação</label>
-                                                                    <input type="text" class="form-control text-uppercase" id="banco_quitacao" name="banco_quitacao" v-model="p.banco_quitacao" disabled>
+                                                                    <label>Banco de quitação</label>
+                                                                    <input type="text" class="form-control text-uppercase" v-model="p.banco_quitacao" disabled>
                                                                 </div>
                                                                 <div v-if="p.valor_boleto" class="form-group col-md-4 col-sm-12">
-                                                                        <label for="valor_boleto">Valor do boleto*</label>
-                                                                        <input class="form-control" type="text" v-money="moeda" name="valor_boleto" :value="formatMoeda(p.valor_boleto)" disabled>
+                                                                        <label>Valor do boleto*</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" :value="formatMoeda(p.valor_boleto)" disabled>
                                                                 </div>
                                                                 <div v-else class="form-group col-md-4 col-sm-12">
-                                                                        <label for="valor_boleto">Valor do boleto*</label>
-                                                                        <input class="form-control" type="text" v-money="moeda" @blur="valorRendimento" name="valor_boleto" v-model="novosdados.valor_boleto" required>
+                                                                        <label>Valor do boleto*</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" @blur="valorRendimento" v-model="novosdados.valor_boleto" required>
                                                                 </div>
                                                                 <div v-if="p.data_vencimento_boleto" class="form-group col-md-4 col-sm-12">
-                                                                    <label for="data_vencimento_boleto">Data do vencimento*</label>
-                                                                    <input type="text" class="form-control" name="data_vencimento_boleto" id="data_vencimento_boleto" :value="formatData(p.data_vencimento_boleto)" disabled>
+                                                                    <label>Data do vencimento*</label>
+                                                                    <input type="text" class="form-control" :value="formatData(p.data_vencimento_boleto)" disabled>
                                                                 </div>
                                                                 <div v-else class="form-group col-md-4 col-sm-12">
-                                                                    <label for="data_vencimento_boleto">Data do vencimento*</label>
-                                                                    <input type="date" class="form-control" name="data_vencimento_boleto" id="data_vencimento_boleto" v-model="novosdados.data_vencimento_boleto" required>
+                                                                    <label>Data do vencimento*</label>
+                                                                    <input type="date" class="form-control" v-model="novosdados.data_vencimento_boleto" required>
                                                                 </div>
                                                                 <div v-if="p.rendimento" class="form-group col-md-4 col-sm-12">
-                                                                        <label for="rendimento">Rendimento</label>
-                                                                        <input class="form-control" type="text" v-money="moeda" name="rendimento" :value="formatMoeda(p.rendimento)" disabled>
+                                                                        <label>Rendimento</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" :value="formatMoeda(p.rendimento)" disabled>
                                                                 </div>
                                                                 <div v-else class="form-group col-md-4 col-sm-12">
-                                                                        <label for="rendimento">Rendimento</label>
-                                                                        <input class="form-control" type="text" v-money="moeda" name="rendimento" v-model="novosdados.rendimento" disabled>
+                                                                        <label>Rendimento</label>
+                                                                        <input class="form-control" type="text" v-money="moeda" v-model="novosdados.rendimento" disabled>
                                                                 </div>
                                                                 <div class="form-group col-md-4 col-sm-12">
-                                                                    <label for="comissao_total">Comissão total</label>
+                                                                    <label>Comissão total</label>
                                                                     <small id="comissao_totalHelp" v-if="p.comissao_total" class="form-text text-muted">Valor atual: {{ formatMoeda(p.comissao_total) }}</small>
-                                                                    <input class="form-control" type="text" v-money="moeda" name="comissao_total" @blur="valorComissao" v-model="novosdados.comissao_total">
+                                                                    <input class="form-control" type="text" v-money="moeda"  @blur="valorComissao" v-model="novosdados.comissao_total">
                                                                 </div>
                                                                 <div class="form-group col-md-4 col-sm-12">
-                                                                        <label for="comissao_escritorio">Comissão do escritório</label>
+                                                                        <label>Comissão do escritório</label>
                                                                         <small id="comissao_escritorioHelp" v-if="p.comissao_escritorio" class="form-text text-muted">Valor atual: {{ formatMoeda(p.comissao_escritorio) }}</small>
-                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_escritorio" v-model="novosdados.comissao_escritorio" disabled>
+                                                                        <input class="form-control" type="text" v-money="moeda" v-model="novosdados.comissao_escritorio" disabled>
                                                                 </div>
                                                                 <div class="form-group col-md-4 col-sm-12">
-                                                                        <label for="comissao_vendedor">Comissão do vendedor</label>
+                                                                        <label>Comissão do vendedor</label>
                                                                         <small id="comissao_vendedorHelp" v-if="p.comissao_vendedor" class="form-text text-muted">Valor atual: {{ formatMoeda(p.comissao_vendedor) }}</small>
-                                                                        <input class="form-control" type="text" v-money="moeda" name="comissao_vendedor" v-model="novosdados.comissao_vendedor" disabled>
+                                                                        <input class="form-control" type="text" v-money="moeda" v-model="novosdados.comissao_vendedor" disabled>
                                                                 </div>
                                                                 <div class="form-group col-md-4">
-                                                                    <label for="status">Atualizar status</label>
-                                                                    <select id="status" class="form-control" name="status" v-model="novosdados.status" required>
+                                                                    <label>Atualizar status</label>
+                                                                    <select class="form-control" v-model="novosdados.status" required>
                                                                         <option v-if="p.status <= 1" value="1" v-bind:selected="p.status == 1">CONTA ABERTA</option>
                                                                         <option v-if="p.status <= 2" value="2" v-bind:selected="p.status == 2">BOLETO PARA QUITAR</option>
                                                                         <option v-if="p.status <= 3" value="3" v-bind:selected="p.status == 3">BOLETO QUITADO</option>
@@ -161,12 +161,12 @@
                                                                     </select>
                                                                 </div>
                                                                 <div v-if="novosdados.status == 3" class="form-group col-md-4">
-                                                                    <label for="data_quitacao">Data de quitação</label>
-                                                                    <input type="date" class="form-control" name="data_quitacao" id="data_quitacao" v-model="novosdados.data_quitacao" required>
+                                                                    <label>Data de quitação</label>
+                                                                    <input type="date" class="form-control" v-model="novosdados.data_quitacao" required>
                                                                 </div>
                                                                 <div v-if="novosdados.status == 4" class="form-group col-md-4">
-                                                                    <label for="data_finalização">Data de finalização</label>
-                                                                    <input type="date" class="form-control" name="data_finalização" id="data_finalização" v-model="novosdados.data_finalizacao" required>
+                                                                    <label>Data de finalização</label>
+                                                                    <input type="date" class="form-control" v-model="novosdados.data_finalizacao" required>
                                                                 </div>
                                                                 <div class="form-group col-md-12"  style="vertical-align: bottom !important;">
                                                                     <button class="btn btn-success">ATUALIZAR</button>
