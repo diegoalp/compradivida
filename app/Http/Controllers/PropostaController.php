@@ -56,8 +56,8 @@ class PropostaController extends Controller
     }
     public function store(Request $request){
             
-            $numero = Proposta::count()+1;
-
+            $numero = Proposta::orderBy('id', 'desc')->first();
+            $numero = $numero->id + 1;
             $proposta = new Proposta();
             $proposta->protocolo = "CD-".str_pad($numero , 3 , '0' , STR_PAD_LEFT);
             $proposta->nome = mb_strtoupper($request->input('nome'));
@@ -119,11 +119,16 @@ class PropostaController extends Controller
                 return error();
             }
         }elseif($request->input('status') == 4){
-            $saldo->saldo = $saldo->saldo + $proposta->valor_boleto + $proposta->rendimento;
-            $saldo->save();
+            if($request->input('valor_boleto') !== "R$ 0,00"){
+                $proposta->valor_boleto = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('valor_boleto'))));
+                $proposta->rendimento = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('rendimento'))));
+                $proposta->data_vencimento_boleto = $request->input('data_vencimento_boleto');
+            }
             $proposta->status = $request->input('status');
             $proposta->data_finalizacao_boleto = $request->input('data_finalizacao');
             $proposta->save();
+            $saldo->saldo = $saldo->saldo + $proposta->valor_boleto + $proposta->rendimento;
+            $saldo->save();
             return response(200);
         }else{
             $proposta->status = $request->input('status');
