@@ -153,11 +153,11 @@
                                                                 </div>
                                                                 <div class="form-group col-md-4">
                                                                     <label for="status">Atualizar status</label>
-                                                                    <select id="status" class="form-control" name="status" v-model="novosdados.status">
-                                                                        <option value="1" :selected="p.status === 1">CONTA ABERTA</option>
-                                                                        <option value="2" :selected="p.status === 2">BOLETO PARA QUITAR</option>
-                                                                        <option value="3" :selected="p.status === 3">BOLETO QUITADO</option>
-                                                                        <option value="4" :selected="p.status === 4">FINALIZADO</option>
+                                                                    <select id="status" class="form-control" name="status" v-model="novosdados.status" required>
+                                                                        <option v-if="p.status <= 1" value="1" v-bind:selected="p.status == 1">CONTA ABERTA</option>
+                                                                        <option v-if="p.status <= 2" value="2" v-bind:selected="p.status == 2">BOLETO PARA QUITAR</option>
+                                                                        <option v-if="p.status <= 3" value="3" v-bind:selected="p.status == 3">BOLETO QUITADO</option>
+                                                                        <option v-if="p.status <= 4" value="4" v-bind:selected="p.status == 4">FINALIZADO</option>
                                                                     </select>
                                                                 </div>
                                                                 <div v-if="novosdados.status == 3" class="form-group col-md-4">
@@ -604,8 +604,8 @@ const customStyles = {
         },
         computed: {
             lista:function(){
-                let ordem = "asc";
-                let ordemCol = "nome";
+                let ordem = "desc";
+                let ordemCol = "protocolo";
                 ordemCol = ordemCol.toLowerCase();
                 if(ordem == "asc"){
                     this.listaPropostas.sort(function(a,b){
