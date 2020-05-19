@@ -46,13 +46,13 @@
             <div class="card-body">
         <table class="table table-striped">
             <tbody><tr>
-                    <th>Nº</th>
-                    <th>Nome</th>
-                    <th>CPF</th>
-                    <th>Vendedor</th>
-                    <th>Valor do boleto</th>
-                    <th>Vencimento</th>
-                    <th>Status</th>
+                    <th style="cursor: pointer;" v-on:click="ordemColuna('protocolo')">Nº</th>
+                    <th style="cursor: pointer;" v-on:click="ordemColuna('nome')">Nome</th>
+                    <th style="cursor: pointer;" v-on:click="ordemColuna('cpf')">CPF</th>
+                    <th style="cursor: pointer;" v-on:click="ordemColuna('vendedor')">Vendedor</th>
+                    <th style="cursor: pointer;" v-on:click="ordemColuna('valor_boleto')">Valor do boleto</th>
+                    <th style="cursor: pointer;" v-on:click="ordemColuna('vencimento')">Vencimento</th>
+                    <th style="cursor: pointer;" v-on:click="ordemColuna('status')">Status</th>
                     </tr>
                     <tr v-for="p in paginaDePropostas" v-bind:key="p.id">
                         <td><a href="#" data-toggle="modal" :data-target="'#PropostaModal' + p.id"><strong>{{ p.protocolo }}</strong></a></td>
@@ -373,6 +373,8 @@ const customStyles = {
                     data_quitacao: '',
                     data_finalizacao: ''
                 },
+                ordemCol: '',
+                ordem: '',
                 listaPropostas: [],
                 paginaDePropostas: [],
                 customLabels,
@@ -601,22 +603,30 @@ const customStyles = {
                     });
                     // this.loadPropostas();
             },
+            ordemColuna(coluna){
+                this.ordemCol = coluna;
+                if(this.ordem.toLowerCase() == "asc"){
+                    this.ordem = "desc";
+                }else{
+                    this.ordem = "asc";
+                }
+            }
         },
         computed: {
             lista:function(){
-                let ordem = "desc";
-                let ordemCol = "protocolo";
-                ordemCol = ordemCol.toLowerCase();
+                let ordem = this.ordem || "desc";
+                let coluna = this.ordemCol || "protocolo";
+                coluna = coluna.toLowerCase();
                 if(ordem == "asc"){
                     this.listaPropostas.sort(function(a,b){
-                    if (a[ordemCol] > b[ordemCol]) {return 1;}
-                    if (a[ordemCol] < b[ordemCol]) {return -1;}
+                    if (a[coluna] > b[coluna]) {return 1;}
+                    if (a[coluna] < b[coluna]) {return -1;}
                     return 0;
                 });
                 }else{
                     this.listaPropostas.sort(function(a,b){
-                    if (a[ordemCol] < b[ordemCol]) {return 1;}
-                    if (a[ordemCol] > b[ordemCol]) {return -1;}
+                    if (a[coluna] < b[coluna]) {return 1;}
+                    if (a[coluna] > b[coluna]) {return -1;}
                     return 0;
                 });
                 }
