@@ -1,6 +1,5 @@
 <template>
 <div class="row">
-    {{ propostasDoMes }}
     <div class="col-md-12">
         <div class="float-left" style="margin-bottom: 20px;">
                 <h4 class="text-primary mt-3">Saldo: </h4>
@@ -617,7 +616,6 @@ const customStyles = {
                 let pComissoes = this.listaPropostas.filter((proposta) => {
                     return proposta.nome_vendedor === 'FELIPE NEVES';
                 });
-                console.log(pComissoes);
             }
         },
         computed: {

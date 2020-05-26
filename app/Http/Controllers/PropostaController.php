@@ -106,7 +106,7 @@ class PropostaController extends Controller
                 $saldo->saldo = $saldo->saldo - $proposta->valor_boleto;
                 $saldo->save();
 
-                if($request->input('comissao_total') !== null){
+                if($request->input('comissao_total') !== "R$ 0,00"){
                     $proposta->comissao_total = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_total'))));
                     $proposta->comissao_escritorio = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_escritorio'))));
                     $proposta->comissao_vendedor = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_vendedor'))));
@@ -119,18 +119,18 @@ class PropostaController extends Controller
                 return error();
             }
         }elseif($request->input('status') == 4){
-            if($request->input('comissao_total') !== null){
+            if($request->input('comissao_total') !== "R$ 0,00"){
                 $proposta->comissao_total = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_total'))));
                 $proposta->comissao_escritorio = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_escritorio'))));
                 $proposta->comissao_vendedor = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_vendedor'))));
             }
+            $proposta->status = $request->input('status');
+            $proposta->data_finalizacao_boleto = $request->input('data_finalizacao');
             if($request->input('valor_boleto') !== null){
                 $proposta->valor_boleto = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('valor_boleto'))));
                 $proposta->rendimento = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('rendimento'))));
                 $proposta->data_vencimento_boleto = $request->input('data_vencimento_boleto');
             }
-            $proposta->status = $request->input('status');
-            $proposta->data_finalizacao_boleto = $request->input('data_finalizacao');
             $proposta->save();
             $saldo->saldo = $saldo->saldo + $proposta->valor_boleto + $proposta->rendimento;
             $saldo->save();
