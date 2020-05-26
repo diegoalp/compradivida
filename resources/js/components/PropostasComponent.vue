@@ -1,5 +1,6 @@
 <template>
 <div class="row">
+    {{ propostasDoMes }}
     <div class="col-md-12">
         <div class="float-left" style="margin-bottom: 20px;">
                 <h4 class="text-primary mt-3">Saldo: </h4>
@@ -373,6 +374,7 @@ const customStyles = {
                     data_quitacao: '',
                     data_finalizacao: ''
                 },
+                propostasDoMes: [],
                 ordemCol: '',
                 ordem: '',
                 listaPropostas: [],
@@ -610,6 +612,12 @@ const customStyles = {
                 }else{
                     this.ordem = "asc";
                 }
+            },
+            propostasComissao(){
+                let pComissoes = this.listaPropostas.filter((proposta) => {
+                    return proposta.nome_vendedor === 'FELIPE NEVES';
+                });
+                console.log(pComissoes);
             }
         },
         computed: {
@@ -642,6 +650,8 @@ const customStyles = {
             this.loadBancos();
             this.loadPropostas();
             this.loadSaldo();
-            this.loadComissoes();        }
+            this.loadComissoes();
+            this.propostasComissao();
+        }
     }
 </script>
