@@ -1,3 +1,7 @@
+.row{
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}
 .bg-info{
     background: linear-gradient(-45deg, #66cdcc 0%, #336799 100%) !important;
 }

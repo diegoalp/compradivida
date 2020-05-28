@@ -257,8 +257,7 @@
                                                     <td>R$ {{ formatMoeda(cv.comissao_vendedor) }}</td>
                                                 </tr>
                                             </table>
-                                        </div>
-                                           
+                                        </div>   
                                 </div>
                             </div>
                         </div>
