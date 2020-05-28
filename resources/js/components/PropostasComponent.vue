@@ -258,7 +258,7 @@
                                                 </tr>
                                             </table>
                                         </div>
-                                        <button class="btn btn-md btn-info" @click="printComissoes">IMPRIMIR</button>   
+                                           
                                 </div>
                             </div>
                         </div>
@@ -658,16 +658,6 @@ const customStyles = {
             },
             comissoesVendedor(nome_vendedor){
                 this.comissoesDoVendedor = this.propostasDoMes.filter(p => p.nome_vendedor.indexOf(nome_vendedor) > -1);
-            },
-            printComissoes:function(){
-                    var printContents = document.getElementById("imprimirComissoes").innerHTML;
-                    var originalContents = document.body.innerHTML;
-
-                    document.body.innerHTML = printContents;
-
-                    window.print();
-
-                    document.body.innerHTML = originalContents;
             }
         },
         computed: {
