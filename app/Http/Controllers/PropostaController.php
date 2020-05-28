@@ -122,7 +122,7 @@ class PropostaController extends Controller
             }
             $proposta->status = $request->input('status');
             $proposta->data_finalizacao_boleto = $request->input('data_finalizacao');
-            if($request->input('valor_boleto') !== null){
+            if($request->input('valor_boleto') !== null && $request->input('valor_boleto') !== "R$ 0,00"){
                 $proposta->valor_boleto = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('valor_boleto'))));
                 $proposta->rendimento = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('rendimento'))));
                 $proposta->data_vencimento_boleto = $request->input('data_vencimento_boleto');
