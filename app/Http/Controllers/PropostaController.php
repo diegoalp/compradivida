@@ -15,18 +15,14 @@ class PropostaController extends Controller
         return json_encode($propostas);
     }
 
-    public function comissoes($vendedor){
+    public function comissoes(){
         $mesAtual = Carbon::now()->month;
         $anoAtual = Carbon::now()->year;
-        $propostas = Proposta::where('nome_vendedor', "=", $vendedor)
-        ->whereMonth('data_quitacao_boleto', '=',$mesAtual)
-        ->whereYear('data_quitacao_boleto', '=',$anoAtual)
+        $propostasMes = Proposta::where('status',4)
+        ->whereMonth('data_finalizacao_boleto', '=',$mesAtual)
+        ->whereYear('data_finalizacao_boleto', '=',$anoAtual)
         ->get();
-        $comissaoVendedor = 0;
-        foreach ($propostas as $key => $value){
-            $comissaoVendedor += $value['comissao_vendedor'];
-        }
-        dd($comissaoVendedor);
+        return json_encode($propostasMes);
 
     }
     public function comissoesEscritorio(){
@@ -140,9 +136,6 @@ class PropostaController extends Controller
             $proposta->save();
             return response(200);
         }
-        
-        
-        
     }
     public function destroy($id)
     {

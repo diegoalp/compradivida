@@ -58,7 +58,7 @@
                         <td><a href="#" data-toggle="modal" :data-target="'#PropostaModal' + p.id"><strong>{{ p.protocolo }}</strong></a></td>
                         <td>{{ p.nome }}</td>
                         <td>{{ p.cpf }}</td>
-                        <td>{{ p.nome_vendedor }}</td>
+                        <td><a href="javascript:;" v-on:click="comissoesVendedor(p.nome_vendedor)" data-toggle="modal" data-target="#ComissoesVendedorModal">{{ p.nome_vendedor }}</a></td>
                         <td>R$ {{ formatMoeda(p.valor_boleto ) }}</td>
                         <td>{{ formatData(p.data_vencimento_boleto) }}</td>
                         <td>
@@ -195,7 +195,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <table class="table table-striped">
-                                                    <tr><td colspan="4">Nome: <strong>{{ p.nome }}</strong></td></tr> 
+                                                    <tr><td colspan="4">Cliente: <strong>{{ p.nome }}</strong></td></tr> 
                                                     <tr>
                                                         <td>CPF: {{ p.cpf }}</td>
                                                         <td>Telefone: {{ p.telefone }}</td>
@@ -209,14 +209,14 @@
                                                     <tr>
                                                         <td>Comissão escritório: R$ {{ formatMoeda(p.comissao_escritorio) }}</td>
                                                         <td>Banco: {{ p.banco_boleto }}</td>
-                                                        <td>Vencimento: {{ p.data_vencimento_boleto | moment("DD/MM/YYYY") }}</td>
+                                                        <td>Vencimento: {{ formatData(p.data_vencimento_boleto) }}</td>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="3">Comissão vendedor: R$ {{ formatMoeda(p.comissao_vendedor) }}</td>
             
                                                     </tr>
                                                     <tr v-if="p.data_quitacao_boleto">
-                                                        <td>Data de quitação: {{ p.data_quitacao_boleto | moment("DD/MM/YYYY") }}</td>
+                                                        <td>Data de quitação: {{ formatData(p.data_quitacao_boleto) }}</td>
                                                         <td>Agência de quitação: {{ p.agencia_quitacao }}</td>
                                                         <td>Banco de quitação: {{ p.banco_quitacao }}</td>
                                                     </tr>   
@@ -226,7 +226,43 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Fim Modal proposta -->                
+                        <!-- Fim Modal proposta -->
+                        <!-- Modal comissões do vendedor -->
+                        <div class="modal fade" id="ComissoesVendedorModal" tabindex="-1" role="dialog" aria-labelledby="ComissoesVendedorModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-xl" role="document">
+                                <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="ComissoesVendedorModalLabel">COMISSÕES DO VENDEDOR
+                                            </h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <table class="table table-striped" id="imprimirComissoes">
+                                                <tr>
+                                                    <td width="100">#</td>
+                                                    <td>Cliente</td>
+                                                    <td>Comissão total</td>
+                                                    <td>Quitação</td>
+                                                    <td>Finalização</td>
+                                                    <td>Comissão do vendedor</td>
+                                                </tr>
+                                                <tr  v-for="cv in comissoesDoVendedor" :key="cv.id">
+                                                    <td> {{ cv.protocolo }} </td>
+                                                    <td> {{ cv.nome }} </td>
+                                                    <td>R$ {{ formatMoeda(cv.comissao_total) }}</td>
+                                                    <td>{{ formatData(cv.data_quitacao_boleto) }}</td>
+                                                    <td>{{ formatData(cv.data_finalizacao_boleto) }}</td>
+                                                    <td>R$ {{ formatMoeda(cv.comissao_vendedor) }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <button class="btn btn-md btn-info" @click="printComissoes">IMPRIMIR</button>   
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Fim Modal comissões do vendedor -->
                     </tr>
                     
             </tbody>
@@ -377,6 +413,7 @@ const customStyles = {
                 ordemCol: '',
                 ordem: '',
                 listaPropostas: [],
+                comissoesDoVendedor: [],
                 paginaDePropostas: [],
                 customLabels,
                 customStyles
@@ -404,6 +441,7 @@ const customStyles = {
                 axios.get('/comissoes')
                     .then(response => {
                         this.comissoes = response.data;
+                        this.propostasDoMes = response.data.propostaMes;
                     });
             },
             loadBancos: function () {
@@ -612,10 +650,24 @@ const customStyles = {
                     this.ordem = "asc";
                 }
             },
-            propostasComissao(){
-                let pComissoes = this.listaPropostas.filter((proposta) => {
-                    return proposta.nome_vendedor === 'FELIPE NEVES';
-                });
+            propostasFinalizadasDoMes(){
+                axios.get('/comissoes/vendedor')
+                    .then(response => {
+                        this.propostasDoMes = response.data;
+                    });
+            },
+            comissoesVendedor(nome_vendedor){
+                this.comissoesDoVendedor = this.propostasDoMes.filter(p => p.nome_vendedor.indexOf(nome_vendedor) > -1);
+            },
+            printComissoes:function(){
+                    var printContents = document.getElementById("imprimirComissoes").innerHTML;
+                    var originalContents = document.body.innerHTML;
+
+                    document.body.innerHTML = printContents;
+
+                    window.print();
+
+                    document.body.innerHTML = originalContents;
             }
         },
         computed: {
@@ -649,7 +701,7 @@ const customStyles = {
             this.loadPropostas();
             this.loadSaldo();
             this.loadComissoes();
-            this.propostasComissao();
+            this.propostasFinalizadasDoMes();
         }
     }
 </script>

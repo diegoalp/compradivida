@@ -26,7 +26,7 @@ Route::delete('proposta/{id}','PropostaController@destroy');
 Route::post('/cadastrarproposta', 'PropostaController@store');
 Route::post('/attproposta/{id}', 'PropostaController@update');
 Route::get('/editar/proposta/{id}','PropostaController@show');
-Route::get('/comissoes/{vendedor}','PropostaController@comissoes');
+Route::get('/comissoes/vendedor','PropostaController@comissoes');
 Route::get('/comissoes','PropostaController@comissoesEscritorio');
 
 //Saldo
