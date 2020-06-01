@@ -46,7 +46,7 @@
             <div class="card-body">
         <table class="table table-striped">
             <tbody><tr>
-                    <th style="cursor: pointer;" v-on:click="ordemColuna('protocolo')">Nº</th>
+                    <th style="cursor: pointer;" v-on:click="ordemColuna('protocolo')" width="100">Nº</th>
                     <th style="cursor: pointer;" v-on:click="ordemColuna('nome')">Nome</th>
                     <th style="cursor: pointer;" v-on:click="ordemColuna('cpf')">CPF</th>
                     <th style="cursor: pointer;" v-on:click="ordemColuna('nome_vendedor')">Vendedor</th>

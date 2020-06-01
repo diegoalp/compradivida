@@ -126,10 +126,14 @@
                                         </div>
                                         <!-- Fim Modal proposta -->
                                     </tr>
-                                    <tr>
-                                        <td>Total:</td>
-                                        <td>R$ {{ formatMoeda(totalVendedor) }}</td>
-                                    </tr>   
+                                    <tr v-if="totalVendedor !== '' && nome_vendedor !== 'GERAL'">
+                                        <td colspan="5">COMISSÃO TOTAL DO VENDEDOR:</td>
+                                        <td colspan="2"><h5>R$ {{ formatMoeda(totalVendedor) }}</h5></td>
+                                    </tr>  
+                                    <tr v-if="totalEscritorio !== ''">
+                                        <td colspan="5">COMISSÃO TOTAL DO ESCRITÓRIO:</td>
+                                        <td colspan="2"><h5>R$ {{ formatMoeda(totalEscritorio) }}</h5></td>
+                                    </tr>  
                                     
                             </tbody>
                         </table>
@@ -150,7 +154,8 @@
                 ordemCol: '',
                 ordem: '',
                 listaPropostas: [],
-                totalVendedor: ''
+                totalVendedor: '',
+                totalEscritorio: '',
             }
         },
         methods:{
@@ -159,10 +164,22 @@
                     .then(response => {
                         this.listaPropostas = response.data;
                         var propostas = this.listaPropostas
-
-                        this.totalVendedor = propostas.Sum({comissao_vendedor});
+                        //somando os valores da comissao do vendedor
+                        //this.totalVendedor = propostas.map(p => p.comissao_vendedor).reduce((a,c)=> parseInt(a) + parseInt(c));
+                        var propostasV = propostas.map(p => p.comissao_vendedor);
+                        var totalV = 0;
+                        for(var i = 0; i < propostasV.length; i++){
+                            totalV += parseFloat(propostasV[i]);
+                        }
+                        this.totalVendedor = totalV;
+                        //somando os valores da comissao do escritório
+                        var propostasE = propostas.map(p => p.comissao_escritorio);
+                        var totalE = 0;
+                        for(var i = 0; i < propostasE.length; i++){
+                            totalE += parseFloat(propostasE[i]);
+                        }
+                        this.totalEscritorio = totalE;
                         
-                        console.log(this.totalVendedor);
                     });
             },
             formatData(data) {
