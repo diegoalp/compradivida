@@ -7,7 +7,8 @@
                                 <div class="form-group col-md-12">
                                     <label>Vendedor</label>
                                     <select class="form-control" id="vendedor" name="vendedor" v-model="nome_vendedor" required>
-                                    <option value="ANA CAROLINA">ANA CAROLINA</option>
+                                        <option value="GERAL">GERAL</option>
+                                        <option value="ANA CAROLINA">ANA CAROLINA</option>
                                         <option value="BARBARA BARROS">BARBARA BARROS</option>
                                         <option value="BIANCA TRINDADE">BIANCA TRINDADE</option>
                                         <option value="BRUNO ARAUJO">BRUNO ARAUJO</option>
@@ -116,7 +117,7 @@
                                                                         <td>Data de quitação: {{ formatData(p.data_quitacao_boleto) }}</td>
                                                                         <td>Agência de quitação: {{ p.agencia_quitacao }}</td>
                                                                         <td>Banco de quitação: {{ p.banco_quitacao }}</td>
-                                                                    </tr>   
+                                                                    </tr>
                                                             </table>
                                                             
                                                         </div>
@@ -125,6 +126,10 @@
                                         </div>
                                         <!-- Fim Modal proposta -->
                                     </tr>
+                                    <tr>
+                                        <td>Total:</td>
+                                        <td>R$ {{ formatMoeda(totalVendedor) }}</td>
+                                    </tr>   
                                     
                             </tbody>
                         </table>
@@ -145,6 +150,7 @@
                 ordemCol: '',
                 ordem: '',
                 listaPropostas: [],
+                totalVendedor: ''
             }
         },
         methods:{
@@ -152,6 +158,11 @@
                 axios.get('/relatorio/' + this.nome_vendedor + '/' + this.mes)
                     .then(response => {
                         this.listaPropostas = response.data;
+                        var propostas = this.listaPropostas
+
+                        this.totalVendedor = propostas.Sum({comissao_vendedor});
+                        
+                        console.log(this.totalVendedor);
                     });
             },
             formatData(data) {
