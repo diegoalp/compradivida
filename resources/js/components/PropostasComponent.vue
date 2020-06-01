@@ -10,25 +10,25 @@
     </div>
     <div class="col-md-12">
         <div class="row">
-            <div class="col-md-3" style="margin-bottom: 20px;">
+            <div class="col-md-3" style="margin-bottom: 20px; padding: 0px !important;">
                 <div class="card border-success mx-sm-1 p-3">
                     <span class="text-success text-center mt-3">Rendimento</span>
                     <h2 class="text-success text-center mt-2">R${{ formatMoeda(comissoes.rendimento) }}</h2>
                 </div>
             </div>
-            <div class="col-md-3" style="margin-bottom: 20px;">
+            <div class="col-md-3" style="margin-bottom: 20px; padding: 0px !important;">
                 <div class="card border-info mx-sm-1 p-3">
                     <span class="text-info text-center mt-3">Comissão total</span>
                     <h2 class="text-info text-center mt-2">R${{ formatMoeda(comissoes.comissao_total) }}</h2>
                 </div>
             </div>
-            <div class="col-md-3" style="margin-bottom: 20px;">
+            <div class="col-md-3" style="margin-bottom: 20px; padding: 0px !important;">
                 <div class="card border-primary mx-sm-1 p-3">
                     <span class="text-primary text-center mt-3">Comissão do escritório</span>
                     <h2 class="text-primary text-center mt-2">R${{ formatMoeda(comissoes.comissao_escritorio) }}</h2>
                 </div>  
             </div>
-            <div class="col-md-3" style="margin-bottom: 20px;">
+            <div class="col-md-3" style="margin-bottom: 20px; padding: 0px !important;">
                 <div class="card border-danger mx-sm-1 p-3">
                     <span class="text-danger text-center mt-3">Comissões a pagar</span>
                     <h2 class="text-danger text-center mt-2">R${{ formatMoeda(comissoes.comissoes_vendedor) }}</h2>
@@ -296,7 +296,33 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="vendedor">Vendedor</label>
-                                <input type="text" class="form-control text-uppercase" id="vendedor" name="vendedor" v-model="proposta.nome_vendedor" required>
+                                <select class="form-control" id="vendedor" name="vendedor" v-model="proposta.nome_vendedor" required>
+                                    <option value="ANA CAROLINA">ANA CAROLINA</option>
+                                        <option value="BARBARA BARROS">BARBARA BARROS</option>
+                                        <option value="BIANCA TRINDADE">BIANCA TRINDADE</option>
+                                        <option value="BRUNO ARAUJO">BRUNO ARAUJO</option>
+                                        <option value="BRUNO SILVA">BRUNO SILVA</option>
+                                        <option value="CAMILA RAFAELE">CAMILA RAFAELE</option>
+                                        <option value="DEJANIRO WANDERLEY">DEJANIRO WANDERLEY</option>
+                                        <option value="DIVINO">DIVINO</option>
+                                        <option value="FABRICIO ALLAN">FABRICIO ALLAN</option>
+                                        <option value="FELIPE OLIVEIRA">FELIPE OLIVEIRA</option>
+                                        <option value="FERNANDA CAMILO">FERNANDA CAMILO</option>
+                                        <option value="FERNANDO JUNIOR">FERNANDO JUNIOR</option>
+                                        <option value="IEDI ANJOS">IEDI ANJOS</option>
+                                        <option value="ISADORA GOMES">ISADORA GOMES</option>
+                                        <option value="JESSIKA TEIXEIRA">JESSIKA TEIXEIRA</option>
+                                        <option value="JULIO CESAR">JULIO CESAR</option>
+                                        <option value="LINDAURA TORRES">LINDAURA TORRES</option>
+                                        <option value="MICHELLY MEIRELES">MICHELLY MEIRELES</option>
+                                        <option value="MOACYR LUZ">MOACYR LUZ</option>
+                                        <option value="NARA CAROLINA">NARA CAROLINA</option>
+                                        <option value="NEUZA LEAL">NEUZA LEAL</option>
+                                        <option value="RAFAEL FELIPE">RAFAEL FELIPE</option>
+                                        <option value="ROSANIA MEIRELLES">ROSANIA MEIRELLES</option>
+                                        <option value="TONI RAMOS">TONI RAMOS</option>
+                                        <option value="WALTER MEIRELLES">WALTER MEIRELLES</option>
+                                </select>
                             </div>
                             <div class="col-12"><hr></div>
                             <div class="form-group col-md-4">
@@ -337,6 +363,7 @@
         </div>
                 <div class="card-footer">
                     <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#novaPropostaModal">CADASTRAR</button>
+                    <button type="button" class="btn btn-outline-success" >RELATÓRIOS</button>
                 </div>
             </div>  
         </div>

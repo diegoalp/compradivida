@@ -33,4 +33,8 @@ Route::get('/comissoes','PropostaController@comissoesEscritorio');
 Route::get('/getsaldo', 'ContaController@index');
 Route::post('/attsaldo/{id}', 'ContaController@update');
 
+//Relatórios
+Route::get('/relatorios', 'HomeController@relatorios')->name('relatorios');
+Route::get('/relatorio/{vendedor}/{mes}','PropostaController@comissoesVendedor');
+
 });

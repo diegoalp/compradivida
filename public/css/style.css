@@ -7,4 +7,6 @@
 }
 li .suggest-item .hover:hover{
     background-color: #ffffff !important;
+}.navbar-dark .navbar-nav .nav-link{
+    color: #ffffff;
 }

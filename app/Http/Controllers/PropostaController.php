@@ -25,6 +25,18 @@ class PropostaController extends Controller
         return json_encode($propostasMes);
 
     }
+    public function comissoesVendedor($vendedor,$mes){
+        $data = explode('-', $mes);
+        $mesAtual = $data[1];
+        $anoAtual = $data[0];
+        $propostasVendedor = Proposta::where('status','=',4)
+        ->where('nome_vendedor', '=', mb_strtoupper($vendedor))
+        ->whereMonth('data_finalizacao_boleto', '=',$mesAtual)
+        ->whereYear('data_finalizacao_boleto', '=',$anoAtual)
+        ->get();
+        return json_encode($propostasVendedor);
+
+    }
     public function comissoesEscritorio(){
         $mesAtual = Carbon::now()->month;
         $anoAtual = Carbon::now()->year;
