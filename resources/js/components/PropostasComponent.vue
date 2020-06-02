@@ -1,11 +1,41 @@
 <template>
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-2">
         <div class="float-left" style="margin-bottom: 20px;">
                 <h4 class="text-primary mt-3">Saldo: </h4>
                     <form @submit.prevent="attSaldo">
                         <input type="text" v-model="saldo" v-money="moeda">
                     </form>  
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-black bg-warning mb-3 text-center">
+            <h1>{{ contaAberta }}</h1>
+            CONTAS ABERTAS
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-white bg-danger mb-3 text-center">
+            <h1>{{ boletoQuitar }}</h1>
+            PARA QUITAR
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-white bg-primary mb-3 text-center">
+            <h1>{{ boletoQuitado }}</h1>
+            BOLETOS QUITADOS
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-white bg-success mb-3 text-center">
+            <h1>{{ boletoFinalizado }}</h1>
+            BOLETOS FINALIZADOS
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-white bg-info mb-3 text-center">
+            <h1>{{ totalPropostas }}</h1>
+            TOTAL
         </div>
     </div>
     <div class="col-md-12">
@@ -435,6 +465,11 @@ const customStyles = {
                     data_quitacao: '',
                     data_finalizacao: ''
                 },
+                contaAberta: '',
+                boletoQuitar: '',
+                boletoQuitado: '',
+                boletoFinalizado: '',
+                totalPropostas: '',
                 propostasDoMes: [],
                 ordemCol: '',
                 ordem: '',
@@ -461,6 +496,28 @@ const customStyles = {
                 axios.get('/listapropostas')
                     .then(response => {
                         this.listaPropostas = response.data;
+                        var propostas = response.data;
+                        var contaaberta = 0;
+                        var boletoquitar = 0;
+                        var boletoquitado = 0;
+                        var boletofinalizado = 0;
+
+                        for(var i = 0; i < propostas.length; i++){
+                            if(propostas[i].status === 1){
+                                contaaberta += 1;
+                            }else if(propostas[i].status === 2){
+                                boletoquitar += 1;
+                            }else if(propostas[i].status === 3){
+                                boletoquitado += 1;
+                            }else{
+                                boletofinalizado += 1;
+                            }
+                        }
+                        this.contaAberta = contaaberta;
+                        this.boletoQuitar = boletoquitar;
+                        this.boletoQuitado = boletoquitado;
+                        this.boletoFinalizado = boletofinalizado;
+                        this.totalPropostas = propostas.length;
                     });
             },
             loadComissoes() {
