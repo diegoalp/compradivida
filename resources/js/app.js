@@ -2,13 +2,24 @@ import Vue from 'vue'
 import VueMask from 'v-mask'
 import Swal from 'sweetalert2'
 import JwPagination from 'jw-vue-pagination'
+import VueHtmlToPaper from "vue-html-to-paper";
 
 require('./bootstrap');
+
+const options = {
+    name: "_blank",
+    specs: ["fullscreen=yes", "titlebar=yes", "scrollbars=yes"],
+    styles: [
+        "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css",
+        "https://unpkg.com/kidlat-css/css/kidlat.css"
+    ]
+};
 
 
 window.Vue = require('vue');
 Vue.use(require('vue-moment'));
 Vue.use(VueMask);
+Vue.use(VueHtmlToPaper, options);
 
 /**
  * The following block of code may be used to automatically register your

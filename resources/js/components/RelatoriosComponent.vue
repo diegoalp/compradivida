@@ -1,10 +1,9 @@
 <template>
     <div class="row col-12">
-        <div class="col-md-3">
-            <div class="card">
+        <div class="col-md-12">
                         <form @submit.prevent="relatorioPropostas()">
-                            <div class="row">
-                                <div class="form-group col-md-12">
+                            <div class="form-row">
+                                <div class="form-group col">
                                     <label>Vendedor</label>
                                     <select class="form-control" id="vendedor" name="vendedor" v-model="nome_vendedor" required>
                                         <option value="GERAL">GERAL</option>
@@ -35,40 +34,40 @@
                                         <option value="WALTER MEIRELLES">WALTER MEIRELLES</option>
                                 </select>
                                 </div>
-                                <div class="form-group col-md-12">
+                                <div class="form-group col">
                                     <label>Mês</label>
                                     <input type="month" class="form-control text-uppercase" v-model="mes">
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col align-baseline" style="padding-top: 30px;">
                                     <button type="submit" class="btn btn-success" >ENVIAR</button>
                                 </div>
                             </div>
                         </form>  
-            </div>
         </div>
     
-        <div class="col-md-9">
-            <div class="card">
-                <div class="card-header">RELATÓRIOS
+        <div class="col-md-12">
+            <div class="card" id="impressao">
+                <div class="card-header">RELATÓRIO DE PROPOSTAS
                 </div>
                 <div class="card-body">
                     <div v-if="listaPropostas !== 0">
                         <table class="table table-striped">
                             <tbody><tr>
-                                    <th style="cursor: pointer;" v-on:click="ordemColuna('protocolo')">Nº</th>
-                                    <th style="cursor: pointer;" v-on:click="ordemColuna('nome')">Nome</th>
-                                    <th style="cursor: pointer;" v-on:click="ordemColuna('cpf')">CPF</th>
-                                    <th style="cursor: pointer;" v-on:click="ordemColuna('valor_boleto')">Valor do boleto</th>
-                                    <th style="cursor: pointer;" v-on:click="ordemColuna('comissao_total')">Comissão total</th>
-                                    <th style="cursor: pointer;" v-on:click="ordemColuna('comissao_vendedor')"><strong>Comissão vendedor</strong></th>
-                                    <th style="cursor: pointer;" v-on:click="ordemColuna('status')">Status</th>
+                                    <th>Nº</th>
+                                    <th>Nome</th>
+                                    <th>Valor do boleto</th>
+                                    <th>Comissão total</th>
+                                    <th>Comissão escritório</th>
+                                    <th><strong>Comissão vendedor</strong></th>
+                                    <th>Status</th>
                                     </tr>
                                     <tr v-for="p in listaPropostas" v-bind:key="p.id">
-                                        <td><a href="#" data-toggle="modal" :data-target="'#PropostaModal' + p.id"><strong>{{ p.protocolo }}</strong></a></td>
+                                        <!-- <td><a href="#" data-toggle="modal" :data-target="'#PropostaModal' + p.id"><strong>{{ p.protocolo }}</strong></a></td> -->
+                                        <td><strong>{{ p.protocolo }}</strong></td>
                                         <td>{{ p.nome }}</td>
-                                        <td>{{ p.cpf }}</td>
                                         <td>R$ {{ formatMoeda(p.valor_boleto ) }}</td>
-                                        <td>R$ {{ formatMoeda(p.comissao_total ) }}</td>
+                                        <td>R$ {{ formatMoeda(p.comissao_total) }}</td>
+                                        <td>R$ {{ formatMoeda(p.comissao_escritorio ) }}</td>
                                         <td><strong>R$ {{ formatMoeda(p.comissao_vendedor ) }}</strong></td>
                                         <td>
                                             <span v-if="p.status === 1" class="badge badge-warning">CONTA ABERTA</span>
@@ -77,7 +76,7 @@
                                             <span v-if="p.status === 4" class="badge badge-success">FINALIZADO</span>
                                         </td>
                                         <!-- Modal proposta -->
-                                        <div class="modal fade" :id="'PropostaModal' + p.id" tabindex="-1" role="dialog" aria-labelledby="PropostaModalLabel" aria-hidden="true">
+                                        <!-- <div class="modal fade" :id="'PropostaModal' + p.id" tabindex="-1" role="dialog" aria-labelledby="PropostaModalLabel" aria-hidden="true">
                                             <div class="modal-dialog modal-lg" role="document">
                                                 <div class="modal-content">
                                                         <div class="modal-header">
@@ -123,7 +122,7 @@
                                                         </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <!-- Fim Modal proposta -->
                                     </tr>
                                     <tr v-if="totalVendedor !== '' && nome_vendedor !== 'GERAL'">
@@ -137,9 +136,38 @@
                                     
                             </tbody>
                         </table>
+                        <div class="col-md-12" v-if="totalEscritorio !== '' && nome_vendedor === 'GERAL'">
+                            <div class="row">
+                                <div class="col-md-3" style="margin-bottom: 20px; padding: 0px !important;">
+                                    <div class="card border-success mx-sm-1 p-3">
+                                        <span class="text-success text-center mt-3">Rendimento</span>
+                                        <h2 class="text-success text-center mt-2">R${{ formatMoeda(totalRendimento) }}</h2>
+                                    </div>
+                                </div>
+                                <div class="col-md-3" style="margin-bottom: 20px; padding: 0px !important;">
+                                    <div class="card border-info mx-sm-1 p-3">
+                                        <span class="text-info text-center mt-3">Comissão total</span>
+                                        <h2 class="text-info text-center mt-2">R${{ formatMoeda(totalComissaoTotal) }}</h2>
+                                    </div>
+                                </div>
+                                <div class="col-md-3" style="margin-bottom: 20px; padding: 0px !important;">
+                                    <div class="card border-primary mx-sm-1 p-3">
+                                        <span class="text-primary text-center mt-3">Comissão do escritório</span>
+                                        <h2 class="text-primary text-center mt-2">R${{ formatMoeda(totalEscritorio) }}</h2>
+                                    </div>  
+                                </div>
+                                <div class="col-md-3" style="margin-bottom: 20px; padding: 0px !important;">
+                                    <div class="card border-danger mx-sm-1 p-3">
+                                        <span class="text-danger text-center mt-3">Comissões a pagar</span>
+                                        <h2 class="text-danger text-center mt-2">R${{ formatMoeda(totalVendedor) }}</h2>
+                                    </div>   
+                                </div>
+                            </div>    
+                        </div>
                     </div>    
                 </div>
             </div>
+            <button style="margin-top: 20px" class="btn btn-outline-dark" @click="printDiv"> IMPRIMIR</button>
         </div> 
     </div>
 </template>
@@ -151,11 +179,10 @@
                 nome_vendedor: '',
                 mes: '',
                 listaPropostas: [],
-                ordemCol: '',
-                ordem: '',
-                listaPropostas: [],
                 totalVendedor: '',
                 totalEscritorio: '',
+                totalRendimento: '',
+                totalComissaoTotal: ''
             }
         },
         methods:{
@@ -179,7 +206,21 @@
                             totalE += parseFloat(propostasE[i]);
                         }
                         this.totalEscritorio = totalE;
+                        //somando os valores da comissao do rendimento
+                        var propostasR = propostas.map(p => p.rendimento);
+                        var totalR = 0;
+                        for(var i = 0; i < propostasR.length; i++){
+                            totalR += parseFloat(propostasR[i]);
+                        }
+                        this.totalRendimento = totalR;
                         
+                        //somando os valores da comissao da comissão total
+                        var propostasCT = propostas.map(p => p.comissao_total);
+                        var totalCT = 0;
+                        for(var i = 0; i < propostasCT.length; i++){
+                            totalCT += parseFloat(propostasCT[i]);
+                        }
+                        this.totalComissaoTotal = totalCT;
                     });
             },
             formatData(data) {
@@ -188,35 +229,10 @@
             formatMoeda(value) {
                 let val = (value/1).toFixed(2).replace('.', ',')
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            },
+            printDiv() {
+                this.$htmlToPaper("impressao");
             }
-        },
-        computed: {
-            lista:function(){
-                let ordem = this.ordem || "desc";
-                let coluna = this.ordemCol || "protocolo";
-                coluna = coluna.toLowerCase();
-                if(ordem == "asc"){
-                    this.listaPropostas.sort(function(a,b){
-                    if (a[coluna] > b[coluna]) {return 1;}
-                    if (a[coluna] < b[coluna]) {return -1;}
-                    return 0;
-                });
-                }else{
-                    this.listaPropostas.sort(function(a,b){
-                    if (a[coluna] < b[coluna]) {return 1;}
-                    if (a[coluna] > b[coluna]) {return -1;}
-                    return 0;
-                });
-                }
-            },
-            ordemColuna(coluna){
-                this.ordemCol = coluna;
-                if(this.ordem.toLowerCase() == "asc"){
-                    this.ordem = "desc";
-                }else{
-                    this.ordem = "asc";
-                }
-            },
         },
         mounted() {
         }
