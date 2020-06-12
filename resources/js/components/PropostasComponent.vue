@@ -82,6 +82,7 @@
                     <th style="cursor: pointer;" v-on:click="ordemColuna('nome_vendedor')">Vendedor</th>
                     <th style="cursor: pointer;" v-on:click="ordemColuna('valor_boleto')">Valor do boleto</th>
                     <th style="cursor: pointer;" v-on:click="ordemColuna('data_vencimento_boleto')">Vencimento</th>
+                    <th style="">Valor de aviso de débito</th>
                     <th style="cursor: pointer;" v-on:click="ordemColuna('status')">Status</th>
                     </tr>
                     <tr v-for="p in paginaDePropostas" v-bind:key="p.id">
@@ -91,6 +92,7 @@
                         <td><a href="javascript:;" v-on:click="comissoesVendedor(p.nome_vendedor)" data-toggle="modal" data-target="#ComissoesVendedorModal">{{ p.nome_vendedor }}</a></td>
                         <td>R$ {{ formatMoeda(p.valor_boleto ) }}</td>
                         <td>{{ formatData(p.data_vencimento_boleto) }}</td>
+                        <td>{{ avisoDebito(p.valor_boleto,p.rendimento,p.comissao_total ) }}</td>
                         <td>
                             <span v-if="p.status === 1" class="badge badge-warning">CONTA ABERTA</span>
                             <span v-if="p.status === 2" class="badge badge-danger">BOLETO PARA QUITAR</span>
@@ -485,6 +487,11 @@ const customStyles = {
                 return Vue.moment(data).add(1, 'd').format('DD/MM/YYYY');
             },
             formatMoeda(value) {
+                let val = (value/1).toFixed(2).replace('.', ',')
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            },
+            avisoDebito(a,b,c) {
+                let value = parseFloat(a) + parseFloat(b) + parseFloat(c)
                 let val = (value/1).toFixed(2).replace('.', ',')
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             },
