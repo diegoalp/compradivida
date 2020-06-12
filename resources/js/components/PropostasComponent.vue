@@ -91,8 +91,10 @@
                         <td>{{ p.cpf }}</td>
                         <td><a href="javascript:;" v-on:click="comissoesVendedor(p.nome_vendedor)" data-toggle="modal" data-target="#ComissoesVendedorModal">{{ p.nome_vendedor }}</a></td>
                         <td>R$ {{ formatMoeda(p.valor_boleto ) }}</td>
-                        <td>{{ formatData(p.data_vencimento_boleto) }}</td>
-                        <td>{{ avisoDebito(p.valor_boleto,p.rendimento,p.comissao_total ) }}</td>
+                        <td><span v-if="p.data_vencimento_boleto !== null">{{ formatData(p.data_vencimento_boleto) }}</span><span v-else class="text-center"> - </span></td>
+                        <td> <span v-if="p.valor_boleto !== null && p.rendimento !== null && p.comissao_total !== null">R$ {{ avisoDebito(p.valor_boleto,p.rendimento,p.comissao_total ) }}</span>
+                        <span v-else class="text-center"> - </span>
+                        </td>
                         <td>
                             <span v-if="p.status === 1" class="badge badge-warning">CONTA ABERTA</span>
                             <span v-if="p.status === 2" class="badge badge-danger">BOLETO PARA QUITAR</span>
