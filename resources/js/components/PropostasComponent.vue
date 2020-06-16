@@ -9,31 +9,31 @@
         </div>
     </div>
     <div class="col-md-2">
-        <div class="card text-black bg-warning mb-3 text-center">
+        <div class="card text-black bg-warning mb-3 text-center" @click="buscar = 1" style="cursor: pointer;">
             <h1>{{ contaAberta }}</h1>
             CONTAS ABERTAS
         </div>
     </div>
     <div class="col-md-2">
-        <div class="card text-white bg-danger mb-3 text-center">
+        <div class="card text-white bg-danger mb-3 text-center" @click="buscar = 2" style="cursor: pointer;">
             <h1>{{ boletoQuitar }}</h1>
             PARA QUITAR
         </div>
     </div>
     <div class="col-md-2">
-        <div class="card text-white bg-primary mb-3 text-center">
+        <div class="card text-white bg-primary mb-3 text-center" @click="buscar = 3" style="cursor: pointer;">
             <h1>{{ boletoQuitado }}</h1>
             BOLETOS QUITADOS
         </div>
     </div>
     <div class="col-md-2">
-        <div class="card text-white bg-success mb-3 text-center">
+        <div class="card text-white bg-success mb-3 text-center" @click="buscar = 4" style="cursor: pointer;">
             <h1>{{ boletoFinalizado }}</h1>
             BOLETOS FINALIZADOS
         </div>
     </div>
     <div class="col-md-2">
-        <div class="card text-white bg-info mb-3 text-center">
+        <div class="card text-white bg-info mb-3 text-center" @click="buscar = ''" style="cursor: pointer;">
             <h1>{{ totalPropostas }}</h1>
             TOTAL
         </div>
@@ -70,7 +70,7 @@
         <div class="card">
             <div class="card-header">PROPOSTAS
                 <div class="float-right" style="width: 350px;">Buscar
-                    <input type="search" name="table_search" class="form-control pull-right" v-model="buscar">
+                    <input type="search" name="table_search" class="form-control pull-right text-uppercase" v-model="buscar">
                 </div>
             </div>
             <div class="card-body">
@@ -434,6 +434,7 @@ const customStyles = {
                     inputWrapper: "",
                     defaultInput : "form-control",
                 },
+                filtro_status: '',
                 listabancos: [],
                 comissoes: '',
                 status: '',
@@ -750,7 +751,15 @@ const customStyles = {
             },
             comissoesVendedor(nome_vendedor){
                 this.comissoesDoVendedor = this.propostasDoMes.filter(p => p.nome_vendedor.indexOf(nome_vendedor) > -1);
-            }
+            },
+            // filtroStatus(status){
+
+            //     if (status == undefined) return this.listaPropostas;
+                
+            //     this.listaPropostas = this.listaPropostas.filter(p => p.status === status);
+            //     console.log(status);
+
+            // }
         },
         computed: {
             lista:function(){
@@ -771,11 +780,11 @@ const customStyles = {
                 });
                 }
 
-                const search = this.buscar.toLowerCase().trim();
+                const busca = this.buscar;
 
-                if (!search) return this.listaPropostas;
+                if (!busca) return this.listaPropostas;
 
-                return this.listaPropostas.filter(p => p.nome.toLowerCase().indexOf(search) > -1);
+                return this.listaPropostas.filter(p => p.status == busca || p.nome.indexOf(busca) > -1);
             }
         },
         mounted() {
