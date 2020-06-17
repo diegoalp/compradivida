@@ -18,7 +18,7 @@ class PropostaController extends Controller
     public function comissoes(){
         $mesAtual = Carbon::now()->month;
         $anoAtual = Carbon::now()->year;
-        $propostasMes = Proposta::where('status',4)
+        $propostasMes = Proposta::where('status',5)
         ->whereMonth('data_finalizacao_boleto', '=',$mesAtual)
         ->whereYear('data_finalizacao_boleto', '=',$anoAtual)
         ->get();
@@ -30,13 +30,13 @@ class PropostaController extends Controller
         $mesAtual = $data[1];
         $anoAtual = $data[0];
         if($vendedor !== "GERAL"){
-            $propostasVendedor = Proposta::where('status','=',4)
+            $propostasVendedor = Proposta::where('status','=',5)
             ->where('nome_vendedor', '=', mb_strtoupper($vendedor))
             ->whereMonth('data_finalizacao_boleto', '=',$mesAtual)
             ->whereYear('data_finalizacao_boleto', '=',$anoAtual)
             ->get();
         }else{
-            $propostasVendedor = Proposta::where('status','=',4)
+            $propostasVendedor = Proposta::where('status','=',5)
             ->whereMonth('data_finalizacao_boleto', '=',$mesAtual)
             ->whereYear('data_finalizacao_boleto', '=',$anoAtual)
             ->get();
@@ -48,7 +48,7 @@ class PropostaController extends Controller
     public function comissoesEscritorio(){
         $mesAtual = Carbon::now()->month;
         $anoAtual = Carbon::now()->year;
-        $propostas = Proposta::where('status',4)
+        $propostas = Proposta::where('status',5)
         ->whereMonth('data_finalizacao_boleto', '=',$mesAtual)
         ->whereYear('data_finalizacao_boleto', '=',$anoAtual)
         ->get();
@@ -135,6 +135,18 @@ class PropostaController extends Controller
                 return error();
             }
         }elseif($request->input('status') == 4){
+
+                if($request->input('comissao_total') !== "R$ 0,00"){
+                    $proposta->comissao_total = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_total'))));
+                    $proposta->comissao_escritorio = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_escritorio'))));
+                    $proposta->comissao_vendedor = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_vendedor'))));
+                }
+                
+                $proposta->status = $request->input('status');
+                $proposta->save();
+                return response(200);
+
+        }elseif($request->input('status') == 5){
             if($request->input('comissao_total') !== "R$ 0,00"){
                 $proposta->comissao_total = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_total'))));
                 $proposta->comissao_escritorio = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_escritorio'))));

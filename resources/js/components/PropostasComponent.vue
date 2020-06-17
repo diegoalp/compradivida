@@ -1,6 +1,6 @@
 <template>
 <div class="row">
-    <div class="col-md-2">
+    <div class="col-md-12">
         <div class="float-left" style="margin-bottom: 20px;">
                 <h4 class="text-primary mt-3">Saldo: </h4>
                     <form @submit.prevent="attSaldo">
@@ -28,12 +28,18 @@
     </div>
     <div class="col-md-2">
         <div class="card text-white bg-success mb-3 text-center" @click="buscar = 4" style="cursor: pointer;">
-            <h1>{{ boletoFinalizado }}</h1>
-            BOLETOS FINALIZADOS
+            <h1>{{ propostapaga }}</h1>
+            PROPOSTAS PAGAS
         </div>
     </div>
     <div class="col-md-2">
-        <div class="card text-white bg-info mb-3 text-center" @click="buscar = ''" style="cursor: pointer;">
+        <div class="card text-white bg-info mb-3 text-center" @click="buscar = 5" style="cursor: pointer;">
+            <h1>{{ boletoFinalizado }}</h1>
+            FINALIZADOS
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-white bg-dark mb-3 text-center" @click="buscar = ''" style="cursor: pointer;">
             <h1>{{ totalPropostas }}</h1>
             TOTAL
         </div>
@@ -99,8 +105,9 @@
                             <span v-if="p.status === 1" class="badge badge-warning">CONTA ABERTA</span>
                             <span v-if="p.status === 2" class="badge badge-danger">BOLETO PARA QUITAR</span>
                             <span v-if="p.status === 3" class="badge badge-primary">BOLETO QUITADO</span>
-                            <span v-if="p.status === 4" class="badge badge-success">FINALIZADO</span>
-                            <span v-if="p.status !== 4"><a href="#" class="badge badge-pill badge-dark" data-toggle="modal" :data-target="'#EditarPropostaModal'+p.id">EDITAR</a></span>
+                            <span v-if="p.status === 4" class="badge badge-success">PROPOSTA PAGA</span>
+                            <span v-if="p.status === 5" class="badge badge-info">FINALIZADO</span>
+                            <span v-if="p.status !== 5"><a href="#" class="badge badge-pill badge-dark" data-toggle="modal" :data-target="'#EditarPropostaModal'+p.id">EDITAR</a></span>
                             <span v-if="p.status == 1 || p.status == 2"><a href="#" class="badge badge-pill badge-danger" @click="removerProposta(p.id)">EXCLUIR</a></span>
                         </td>
                         <!-- Modal editar proposta -->
@@ -191,14 +198,15 @@
                                                                         <option v-if="p.status <= 1" value="1" v-bind:selected="p.status == 1">CONTA ABERTA</option>
                                                                         <option v-if="p.status <= 2" value="2" v-bind:selected="p.status == 2">BOLETO PARA QUITAR</option>
                                                                         <option v-if="p.status <= 3" value="3" v-bind:selected="p.status == 3">BOLETO QUITADO</option>
-                                                                        <option v-if="p.status <= 4" value="4" v-bind:selected="p.status == 4">FINALIZADO</option>
+                                                                        <option v-if="p.status <= 4" value="4" v-bind:selected="p.status == 4">PROPOSTA PAGA</option>
+                                                                        <option v-if="p.status <= 5" value="5" v-bind:selected="p.status == 5">FINALIZADO</option>
                                                                     </select>
                                                                 </div>
                                                                 <div v-if="novosdados.status == 3" class="form-group col-md-4">
                                                                     <label>Data de quitação</label>
                                                                     <input type="date" class="form-control" v-model="novosdados.data_quitacao" required>
                                                                 </div>
-                                                                <div v-if="novosdados.status == 4" class="form-group col-md-4">
+                                                                <div v-if="novosdados.status == 5" class="form-group col-md-4">
                                                                     <label>Data de finalização</label>
                                                                     <input type="date" class="form-control" v-model="novosdados.data_finalizacao" required>
                                                                 </div>
@@ -221,7 +229,8 @@
                                                 <span v-if="p.status === 1" class="badge badge-warning">CONTA ABERTA</span>
                                                 <span v-if="p.status === 2" class="badge badge-danger">BOLETO PARA QUITAR</span>
                                                 <span v-if="p.status === 3" class="badge badge-primary">BOLETO QUITADO</span>
-                                                <span v-if="p.status === 4" class="badge badge-success">FINALIZADO</span>
+                                                <span v-if="p.status === 4" class="badge badge-success">PROPOSTA PAGA</span>
+                                                <span v-if="p.status === 5" class="badge badge-info">FINALIZADO</span>
                                             </h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
@@ -474,6 +483,7 @@ const customStyles = {
                 boletoQuitar: '',
                 boletoQuitado: '',
                 boletoFinalizado: '',
+                propostapaga: '',
                 totalPropostas: '',
                 propostasDoMes: [],
                 ordemCol: '',
@@ -510,6 +520,7 @@ const customStyles = {
                         var contaaberta = 0;
                         var boletoquitar = 0;
                         var boletoquitado = 0;
+                        var propostapaga = 0;
                         var boletofinalizado = 0;
 
                         for(var i = 0; i < propostas.length; i++){
@@ -519,6 +530,8 @@ const customStyles = {
                                 boletoquitar += 1;
                             }else if(propostas[i].status === 3){
                                 boletoquitado += 1;
+                            }else if(propostas[i].status === 4){
+                                propostapaga += 1;
                             }else{
                                 boletofinalizado += 1;
                             }
@@ -526,6 +539,7 @@ const customStyles = {
                         this.contaAberta = contaaberta;
                         this.boletoQuitar = boletoquitar;
                         this.boletoQuitado = boletoquitado;
+                        this.propostapaga = propostapaga;
                         this.boletoFinalizado = boletofinalizado;
                         this.totalPropostas = propostas.length;
                     });
