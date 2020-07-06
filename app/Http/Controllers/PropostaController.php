@@ -72,7 +72,7 @@ class PropostaController extends Controller
     }
     public function store(Request $request){
             
-            $numero = Proposta::orderBy('id', 'desc')->first();
+            $numero = Proposta::withTrashed()->orderBy('id', 'desc')->first();
             $numero = $numero->id + 1;
             $proposta = new Proposta();
             $proposta->protocolo = "CD-".str_pad($numero , 3 , '0' , STR_PAD_LEFT);
