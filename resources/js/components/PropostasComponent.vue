@@ -75,8 +75,8 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">PROPOSTAS
-                <div class="float-right" style="width: 350px;">Buscar
-                    <input type="search" name="table_search" class="form-control pull-right text-uppercase" v-model="buscar">
+                <div class="float-right" style="width: 350px;">
+                    <input type="search" name="table_search" placeholder="Buscar" class="form-control pull-right text-uppercase" v-model="buscar">
                 </div>
             </div>
             <div class="card-body">
