@@ -118,25 +118,21 @@ class PropostaController extends Controller
 
         }
         elseif($request->input('status') == 3){
-            if($saldo->saldo >= $proposta->valor_boleto){
-                $saldo->saldo = $saldo->saldo - $proposta->valor_boleto;
-                $saldo->save();
+            $saldo->saldo = $saldo->saldo - $proposta->valor_boleto;
+            $saldo->save();
 
-                if($request->input('comissao_total') !== "R$ 0,00"){
-                    $proposta->comissao_total = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_total'))));
-                    $proposta->comissao_escritorio = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_escritorio'))));
-                    $proposta->comissao_vendedor = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_vendedor'))));
-                }
-                $proposta->status = $request->input('status');
-                if($request->input('valor_boleto') !== null && $request->input('valor_boleto') !== "R$ 0,00"){
-                    $proposta->valor_boleto = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('valor_boleto'))));
-                }
-                $proposta->data_quitacao_boleto = $request->input('data_quitacao');
-                $proposta->save();
-                return response(200);
-            }else{
-                return error(500);
+            if($request->input('comissao_total') !== "R$ 0,00"){
+                $proposta->comissao_total = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_total'))));
+                $proposta->comissao_escritorio = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_escritorio'))));
+                $proposta->comissao_vendedor = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_vendedor'))));
             }
+            $proposta->status = $request->input('status');
+            if($request->input('valor_boleto') !== null && $request->input('valor_boleto') !== "R$ 0,00"){
+                $proposta->valor_boleto = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('valor_boleto'))));
+            }
+            $proposta->data_quitacao_boleto = $request->input('data_quitacao');
+            $proposta->save();
+            return response(200);
         }elseif($request->input('status') == 4){
 
                 if($request->input('comissao_total') !== "R$ 0,00"){
