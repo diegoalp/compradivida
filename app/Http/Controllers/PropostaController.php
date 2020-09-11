@@ -128,12 +128,14 @@ class PropostaController extends Controller
                     $proposta->comissao_vendedor = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('comissao_vendedor'))));
                 }
                 $proposta->status = $request->input('status');
-                $proposta->valor_boleto = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('valor_boleto'))));
+                if($request->input('valor_boleto') !== null && $request->input('valor_boleto') !== "R$ 0,00"){
+                    $proposta->valor_boleto = str_replace('R$', '',str_replace(',', '.', str_replace('.', '', $request->input('valor_boleto'))));
+                }
                 $proposta->data_quitacao_boleto = $request->input('data_quitacao');
                 $proposta->save();
                 return response(200);
             }else{
-                return error();
+                return error(500);
             }
         }elseif($request->input('status') == 4){
 
