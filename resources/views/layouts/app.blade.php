@@ -17,9 +17,12 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="http://compra-divida.herokuapp.com/css/app.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ secure_asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ secure_asset('css/style.css') }}">
+ 
+    {{-- <link href="http://compra-divida.herokuapp.com/css/app.css" rel="stylesheet">
     <link href="http://compra-divida.herokuapp.com/css/style.css" rel="stylesheet">
-    <link href="http://compra-divida.herokuapp.com/css/app.css" rel="stylesheet"  media="print">
+    <link href="http://compra-divida.herokuapp.com/css/app.css" rel="stylesheet"  media="print"> --}}
 </head>
 <body>
     <div id="app">
