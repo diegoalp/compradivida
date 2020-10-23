@@ -17,9 +17,9 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="css/app.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/app.css" rel="stylesheet"  media="print">
+    <link href="http://compra-divida.herokuapp.com/css/app.css" rel="stylesheet">
+    <link href="http://compra-divida.herokuapp.com/css/style.css" rel="stylesheet">
+    <link href="http://compra-divida.herokuapp.com/css/app.css" rel="stylesheet"  media="print">
 </head>
 <body>
     <div id="app">
